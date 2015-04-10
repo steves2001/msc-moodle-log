@@ -1,19 +1,20 @@
-﻿<Window x:Class="MoodleLogAnalyse.MainWindow"
+﻿<Window x:Name="TheMainWindow" x:Class="MoodleLogAnalyse.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525">
+    <Window.CommandBindings>
+        <CommandBinding Command="New" CanExecute="CommonCommandBinding_CanExecute" />
+        <CommandBinding Command="Open" CanExecute="CommonCommandBinding_CanExecute" />
+        <CommandBinding Command="Save" CanExecute="CommonCommandBinding_CanExecute" />
+    </Window.CommandBindings>
+    
     <Grid>
         <DockPanel LastChildFill="True">
             <ToolBarTray VerticalAlignment="Top" DockPanel.Dock="Top">
             <ToolBar>
                 <Button Command="New" Content="New" />
-                <Button Command="Open" Content="Open" />
+                <Button x:Name="btn_Open" Command="Open" Content="Open" VerticalAlignment="Top" Click="btn_Open_Click" />
                 <Button Command="Save" Content="Save" />
-            </ToolBar>
-            <ToolBar>
-                <Button Command="Cut" Content="Cut" />
-                <Button Command="Copy" Content="Copy" />
-                <Button Command="Paste" Content="Paste" />
             </ToolBar>
             </ToolBarTray>
             <Canvas Background="Red" />
