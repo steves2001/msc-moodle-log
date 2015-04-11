@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace MoodleLogAnalyse
 {
+    /// <summary>
+    /// A basic Module class for the storage of unique instances of the modules in the course.
+    /// </summary>
     class Module
     {
         #region private attributes
@@ -44,7 +47,7 @@ namespace MoodleLogAnalyse
 
         public static Module operator --(Module m)
         {
-            if(m.totalAccesses > 0) m.totalAccesses--; // Decrement the access count.
+            if (m.totalAccesses > 0) m.totalAccesses--; // Decrement the access count.
             return m;
         }
         #endregion
