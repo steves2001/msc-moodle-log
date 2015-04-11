@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525">
     <Window.CommandBindings>
-        <CommandBinding Command="New" CanExecute="CommonCommandBinding_CanExecute" />
-        <CommandBinding Command="Open" CanExecute="CommonCommandBinding_CanExecute" />
-        <CommandBinding Command="Save" CanExecute="CommonCommandBinding_CanExecute" />
+        <CommandBinding Command="New" Executed="NewCommand_Executed" CanExecute="CommonCommandBinding_CanExecute" />
+        <CommandBinding Command="Open" Executed="OpenCommand_Executed" CanExecute="CommonCommandBinding_CanExecute" />
+        <CommandBinding Command="Save" Executed="SaveCommand_Executed" CanExecute="CommonCommandBinding_CanExecute" />
     </Window.CommandBindings>
     
     <Grid>
@@ -13,11 +13,11 @@
             <ToolBarTray VerticalAlignment="Top" DockPanel.Dock="Top">
             <ToolBar>
                 <Button Command="New" Content="New" />
-                <Button x:Name="btn_Open" Command="Open" Content="Open" VerticalAlignment="Top" Click="btn_Open_Click" />
+                <Button Command="Open" Content="Open" />
                 <Button Command="Save" Content="Save" />
             </ToolBar>
             </ToolBarTray>
-            <Canvas Background="Red" />
+            <Canvas Background="White" />
         </DockPanel>
 
 

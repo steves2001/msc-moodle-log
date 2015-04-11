@@ -31,7 +31,11 @@ namespace MoodleLogAnalyse
             e.CanExecute = true;
         }
 
-        private void btn_Open_Click(object sender, RoutedEventArgs e)
+        private void NewCommand_Executed(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void OpenCommand_Executed(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog();
             dlg.FileName = "Log"; // Default file name
@@ -41,5 +45,10 @@ namespace MoodleLogAnalyse
             if (dlg.ShowDialog() == true)
                 Analyse.getData(dlg.FileName);
         }
+
+        private void SaveCommand_Executed(object sender, RoutedEventArgs e)
+        {
+        }
+
     }
 }
