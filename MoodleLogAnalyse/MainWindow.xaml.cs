@@ -21,12 +21,9 @@ namespace MoodleLogAnalyse
     /// </summary>
     public partial class MainWindow : Window
     {
-        Analyse Analyser; // The log file analyser
-
         public MainWindow()
         {
             InitializeComponent();
-            Analyser = new Analyse();
         }
 
         private void CommonCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
