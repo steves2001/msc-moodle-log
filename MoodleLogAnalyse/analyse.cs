@@ -37,6 +37,8 @@ namespace MoodleLogAnalyse
         {
             uint moodleId;  // Moodle unique id for the user
 
+            studentList.Clear();
+
             foreach (DataRow logRow in moodleData.Tables[0].Rows)
             {
                 moodleId = uint.Parse(logRow["userid"].ToString());
@@ -64,6 +66,8 @@ namespace MoodleLogAnalyse
         {
             uint moodleId;  // Moodle unique id for the module
             uint typeId;  // Moodle unique id for a module type
+
+            moduleList.Clear();
 
             foreach (DataRow logRow in moodleData.Tables[0].Rows)
             {
@@ -94,12 +98,25 @@ namespace MoodleLogAnalyse
 #endif
                 }
             }
+#if DEBUG
+            Console.WriteLine("Highest Access Count = " + findMaxModuleAccessCount());
+#endif
         }  // End findModules
+        /// <summary>
+        /// Finds the module with the highest access count and returns the count or null if the list is empty
+        /// </summary>
+        /// <returns>The total accesses of the module with the highest module count or null if there are no modules</returns>
+        public static uint? findMaxModuleAccessCount()
+        {
+            return  moduleList.Max(module => module.Value.totalAccesses);
+        } // End findMaxModuleAccessCount
         #endregion
 
         #region data access methods
         public static void getData(string filename)
         {
+           
+
             moodleData = fileReader.ReadOdsFile(filename);  // Read the ODS File with the data
 
             // Transfer first row of the table to the column names and then remove that row

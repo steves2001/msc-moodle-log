@@ -11,11 +11,12 @@ namespace MoodleLogAnalyse
     /// </summary>
     class Module
     {
+
         #region private attributes
-        uint id;
-        uint type;
-        string name;
-        uint totalAccesses;
+        public uint id { get; set; }// Moodle module id
+        public uint type { get; set; } // The moodle module type id
+        public string name { get; set; } // The name of the module
+        public uint totalAccesses { get; set; } // total accesses for this module
         #endregion
 
         #region constructors
