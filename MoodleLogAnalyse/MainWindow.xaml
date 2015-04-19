@@ -6,6 +6,7 @@
         <CommandBinding Command="New" Executed="NewCommand_Executed" CanExecute="CommonCommandBinding_CanExecute" />
         <CommandBinding Command="Open" Executed="OpenCommand_Executed" CanExecute="CommonCommandBinding_CanExecute" />
         <CommandBinding Command="Save" Executed="SaveCommand_Executed" CanExecute="CommonCommandBinding_CanExecute" />
+        
     </Window.CommandBindings>
     
     <Grid>
@@ -15,7 +16,8 @@
                 <Button Command="New" Content="New" />
                 <Button Command="Open" Content="Open" />
                 <Button Command="Save" Content="Save" />
-            </ToolBar>
+                <Button Name="Chart" Content="Chart" Click="ChartCommand_Executed"/>
+                </ToolBar>
             </ToolBarTray>
             <Canvas Background="White" />
         </DockPanel>

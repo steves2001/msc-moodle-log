@@ -49,6 +49,12 @@ namespace MoodleLogAnalyse
         private void SaveCommand_Executed(object sender, RoutedEventArgs e)
         {
         }
+        private void ChartCommand_Executed(object sender, RoutedEventArgs e)
+        {
+            ChartWindow c = new ChartWindow();
+            c.ShowDialog();
+
+        }
 
     }
 }
