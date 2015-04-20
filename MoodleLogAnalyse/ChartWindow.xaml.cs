@@ -19,6 +19,7 @@ namespace MoodleLogAnalyse
     /// </summary>
     public partial class ChartWindow : Window
     {
+        List<Bar> dataBars = new List<Bar>();
 
         public ChartWindow()
         {
@@ -27,9 +28,25 @@ namespace MoodleLogAnalyse
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Bar b = new Bar(200, 300, "Hello World", 300, new Point(100, 100), Brushes.Green, Colors.Blue, Colors.Green);
+            uint maxModule = (uint)Analyse.findMaxModuleAccessCount();
 
-            ChartCanvas.Children.Add(b.dataBar);
+            int yPos = 0;
+            Bar b;
+
+            ChartCanvas.Children.Clear();
+
+            ChartCanvas.Height = (Analyse.moduleList.Count  + 1) * 30;
+            foreach(Module m in Analyse.moduleList.Values)
+            {
+                yPos += 30;
+                b = new Bar(m.totalAccesses, maxModule, m.name, 400, new Point(10, yPos), Brushes.Green, Colors.Blue, Colors.Green);
+                dataBars.Add(b);
+                ChartCanvas.Children.Add(b.dataBar);
+                ChartCanvas.Children.Add(b.dataLabel);
+            }
+             
+
+            
         }
     }
 }

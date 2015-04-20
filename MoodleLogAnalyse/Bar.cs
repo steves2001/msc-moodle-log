@@ -27,9 +27,14 @@ namespace MoodleLogAnalyse
             this.dataBar.Stroke = base.outlineColour;
             this.dataBar.Width = base.drawLength;
             this.dataBar.Height = 20;
-            Canvas.SetLeft(this.dataBar, position.X);
+            Canvas.SetLeft(this.dataBar, position.X + 350);
             Canvas.SetTop(this.dataBar, position.Y);
             this.dataLabel = new TextBlock(new Run(base.text));
+            Canvas.SetLeft(this.dataLabel, position.X );
+            Canvas.SetTop(this.dataLabel, position.Y);
+            this.dataLabel.Width = 350;
+            this.dataLabel.Height = 20;
+            
             
         }
 
