@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,8 +26,20 @@ namespace MoodleLogAnalyse
         {
             InitializeComponent();
             ModuleSelector.ItemsSource = Analyse.moduleTypeList.Values; // Add the module types to the list box
+            ModuleSelector.SelectAll(); // Start with everything selected
 
         }
+
+        private bool notSelectedListItem(uint currentId)
+        {
+            foreach (ModuleType item in ModuleSelector.SelectedItems)
+            {
+                if (currentId == item.id)
+                    return false;
+            }
+            return true;
+        }
+
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -40,10 +53,13 @@ namespace MoodleLogAnalyse
             ChartCanvas.Height = (Analyse.moduleList.Count  + 1) * 30;
             foreach(Module m in Analyse.moduleList.Values)
             {
-                if (Analyse.moduleTypeList[m.type].name == "assign") continue;  // If it is an assignment
+                Color colourBottom = (Color)ColorConverter.ConvertFromString("#FFE1A900"); //ARGB
+                Color colourTop = (Color)ColorConverter.ConvertFromString("#FFFFFF99");
+                Brush lineColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF000000"));
+                if (notSelectedListItem(m.type)) continue;  // If it is an assignment
                 yPos += 30;
 
-                b = new Bar(m.totalAccesses, maxModule, Analyse.moduleTypeList[m.type].name.Substring(0,3) + " : " + m.name, 400, new Point(10, yPos), Brushes.Green, Colors.Blue, Colors.Green);
+                b = new Bar(m.totalAccesses, maxModule, Analyse.moduleTypeList[m.type].name.Substring(0,3) + " : " + m.name, 400, new Point(10, yPos), lineColour, colourTop, colourBottom);
                 dataBars.Add(b);
                 ChartCanvas.Children.Add(b.dataBar);
                 ChartCanvas.Children.Add(b.dataLabel);

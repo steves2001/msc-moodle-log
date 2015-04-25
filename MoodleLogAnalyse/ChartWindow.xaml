@@ -12,7 +12,7 @@
             <Canvas x:Name="ChartCanvas" Height="800" Width="800" Background="Beige"/>
         </ScrollViewer>
         <Button Grid.Column="0" Content="Display Chart" HorizontalAlignment="Left" Margin="8,10,0,0" VerticalAlignment="Top" Click="Button_Click" Width="182"/>
-        <ListBox x:Name="ModuleSelector" HorizontalContentAlignment="Stretch" HorizontalAlignment="Left" Height="295" Margin="8,34,0,0" VerticalAlignment="Top" Width="182">
+        <ListBox x:Name="ModuleSelector" HorizontalContentAlignment="Stretch" HorizontalAlignment="Left" Height="295" Margin="8,34,0,0" VerticalAlignment="Top" Width="182" SelectionMode="Multiple">
         <ListBox.ItemTemplate>
             <DataTemplate>
                 <Grid Margin="0,2">
