@@ -20,7 +20,7 @@ namespace MoodleLogAnalyse
 
         public static SortedList<uint,Student> studentList = new SortedList<uint,Student>();  // A list of all the students in the log.
         public static SortedList<uint, Module> moduleList = new SortedList<uint, Module>();  // A list of all the modules in the log.
-        public static SortedList<uint, string> moduleTypeList = new SortedList<uint, string>();  // A list of all the modules types in the log.
+        public static SortedList<uint, ModuleType> moduleTypeList = new SortedList<uint, ModuleType>();  // A list of all the modules types in the log.
         #endregion
 
         #region data extraction methods
@@ -72,6 +72,7 @@ namespace MoodleLogAnalyse
             foreach (DataRow logRow in moodleData.Tables[0].Rows)
             {
                 moodleId = uint.Parse(logRow["instanceid"].ToString());
+                typeId = uint.Parse(logRow["module"].ToString());
 
                 if (moduleList.ContainsKey(moodleId))
                 {
@@ -87,16 +88,19 @@ namespace MoodleLogAnalyse
                     );
 
                     // Populate the list of module types in the course
-                    typeId = uint.Parse(logRow["module"].ToString());
+                    
                     
                     if (!moduleTypeList.ContainsKey(typeId))
+                    // Type did not exist add it to the list.
                     {
-                        moduleTypeList.Add(typeId, logRow["type"].ToString());
+                        moduleTypeList.Add(typeId, new ModuleType(typeId, logRow["type"].ToString()));
+                        
                     }
 #if DEBUG           
                     Console.WriteLine(moduleList[moodleId].ToString());  
 #endif
                 }
+                moduleTypeList[typeId]++;  // Total Accesses for that type of module
             }
 #if DEBUG
             Console.WriteLine("Highest Access Count = " + findMaxModuleAccessCount());
