@@ -19,7 +19,7 @@ namespace MoodleLogAnalyse
         public Bar() : base()
         { }
 
-        public Bar(double data, double dataMax, string dataLabel, uint graphicLimit, Point position, Brush lineColour, Color startFillColour, Color EndFillColour) :
+        public Bar(double data, double dataMax, string dataLabel, double graphicLimit, Point position, Brush lineColour, Color startFillColour, Color EndFillColour) :
             base(data, dataMax, dataLabel, graphicLimit, lineColour, startFillColour, EndFillColour)
         {
             this.dataBar.Fill = base.brush;

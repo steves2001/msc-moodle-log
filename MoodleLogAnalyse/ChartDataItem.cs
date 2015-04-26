@@ -28,8 +28,8 @@ namespace MoodleLogAnalyse
 
         #region graphical properties
 
-        public uint maxLength; // Max size of the data item
-        public uint drawLength; // Length of to draw
+        public double maxLength; // Max size of the data item
+        public double drawLength; // Length of to draw
         public LinearGradientBrush brush;
         public Brush outlineColour;
         #endregion
@@ -51,7 +51,7 @@ namespace MoodleLogAnalyse
             outlineColour = Brushes.Black;
         }
 
-        public ChartDataItem(double data, double dataMax, string dataLabel, uint graphicLimit, Brush lineColour, Color startFillColour, Color EndFillColour)
+        public ChartDataItem(double data, double dataMax, string dataLabel, double graphicLimit, Brush lineColour, Color startFillColour, Color EndFillColour)
         {
             maxLength = graphicLimit;
             valueLimit = dataMax;
@@ -59,7 +59,7 @@ namespace MoodleLogAnalyse
             text = dataLabel;
             percentage = value / valueLimit;
 
-            drawLength = Convert.ToUInt32((double)maxLength * percentage);
+            drawLength = maxLength * percentage;
             brush = new LinearGradientBrush();
             brush.StartPoint = new Point(0.5, 0);
             brush.EndPoint = new Point(0.5, 1);
