@@ -12,11 +12,11 @@ namespace MoodleLogAnalyse
     class Student
     {
         #region private attributes
-        uint id;
-        string firstname;
-        string lastname;
-        string username;
-        bool active;
+        public uint id { get; set; }
+        public string firstname { get; set; }
+        public string lastname { get; set; }
+        public string username { get; set; }
+        public bool active { get; set; }
         #endregion
 
         #region constructors

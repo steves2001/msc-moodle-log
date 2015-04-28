@@ -30,6 +30,7 @@ namespace MoodleLogAnalyse
             InitializeComponent();
             ModuleSelector.ItemsSource = Analyse.moduleTypeList.Values; // Add the module types to the list box
             ModuleSelector.SelectAll(); // Start with everything selected
+            drawBarChart();
 
         }
 
@@ -43,13 +44,11 @@ namespace MoodleLogAnalyse
             return true;
         }
 
-
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void drawBarChart()
         {
-            
             uint maxModule = 0; // (uint)Analyse.findMaxModuleAccessCount();
             uint barCount = 0;
-            
+
             foreach (Module m in Analyse.moduleList.Values)
             {
 
@@ -59,13 +58,15 @@ namespace MoodleLogAnalyse
             int yPos = 0;
             Bar b;
             Bar s;
-                Color colourBottom = (Color)ColorConverter.ConvertFromString("#FFE1A900"); //ARGB
-                Color colourTop = (Color)ColorConverter.ConvertFromString("#FFFFFF99");
-                Brush lineColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF000000"));
+            Color bar1Bottom = (Color)ColorConverter.ConvertFromString("#FFE1A900"); //ARGB
+            Color bar1Top = (Color)ColorConverter.ConvertFromString("#FFFFFF99");
+            Color bar2Bottom = (Color)ColorConverter.ConvertFromString("#FF47A15F"); //ARGB
+            Color bar2Top = (Color)ColorConverter.ConvertFromString("#FF63E686");
+            Brush lineColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF000000"));
             ChartCanvas.Children.Clear();
 
             //ChartCanvas.Height = (Analyse.moduleList.Count  + 1) * 30;
-            foreach(Module m in Analyse.moduleList.Values)
+            foreach (Module m in Analyse.moduleList.Values)
             {
 
                 if (notSelectedListItem(m.type)) continue;
@@ -74,7 +75,7 @@ namespace MoodleLogAnalyse
                 barCount++;
 
                 //Total module access
-                b = new Bar(m.totalAccesses, maxModule, Analyse.moduleTypeList[m.type].name.Substring(0,3) + " : " + m.name, barLimit, new Point(10, yPos), lineColour, colourTop, colourBottom);
+                b = new Bar(m.totalAccesses, maxModule, Analyse.moduleTypeList[m.type].name.Substring(0, 3) + " : " + m.name, 20, barLimit, new Point(10, yPos), lineColour, bar1Top, bar1Bottom);
                 dataBars.Add(b);
                 Canvas.SetZIndex(b.dataBar, 1);
                 Canvas.SetZIndex(b.dataLabel, 2);
@@ -82,16 +83,16 @@ namespace MoodleLogAnalyse
                 ChartCanvas.Children.Add(b.dataLabel);
 
                 // Unique student access count
-                s = new Bar(m.uniqueAccesses, maxModule, "", barLimit, new Point(10, yPos), lineColour, colourTop, colourBottom);
+                s = new Bar(m.uniqueAccesses, maxModule, "", 14, barLimit, new Point(10, yPos + 3), lineColour, bar2Top, bar2Bottom);
                 dataBars.Add(s);
                 Canvas.SetZIndex(s.dataBar, 2);
                 ChartCanvas.Children.Add(s.dataBar);
-                
+
             }
             ChartCanvas.Height = (barCount + 1) * 30;
             if (barCount > 0)
             {
-                double accessPercentage = (double)Analyse.studentList.Count / (double)maxModule;
+                double accessPercentage = (double)Analyse.selectedStudentCount / (double)maxModule;
                 //Draw the minimum expected accesses
                 minimumLimit.StrokeThickness = 1;
                 minimumLimit.Stroke = lineColour;
@@ -114,7 +115,13 @@ namespace MoodleLogAnalyse
                 aboveLimit.Height = yPos - 10;
                 ChartCanvas.Children.Add(aboveLimit);
             }
-            
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+            drawBarChart();
+
         }
     }
 }

@@ -24,6 +24,7 @@ namespace MoodleLogAnalyse
         public MainWindow()
         {
             InitializeComponent();
+
         }
 
         private void CommonCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -43,7 +44,13 @@ namespace MoodleLogAnalyse
             dlg.Filter = "Open Document Spreadsheets (.ods)|*.ods"; // Filter files by extension 
 
             if (dlg.ShowDialog() == true)
+            {
                 Analyse.getData(dlg.FileName);
+                Analyse.findStudents();
+                StudentSelector.ItemsSource = Analyse.studentList.Values; // Add the module types to the list box
+                //StudentSelector.SelectAll(); // Start with everything selected
+
+            }
         }
 
         private void SaveCommand_Executed(object sender, RoutedEventArgs e)
@@ -51,6 +58,16 @@ namespace MoodleLogAnalyse
         }
         private void ChartCommand_Executed(object sender, RoutedEventArgs e)
         {
+            if (StudentSelector.Items.Count == StudentSelector.SelectedItems.Count) return;
+
+            Analyse.excludedStudents.Clear();
+
+            foreach (Student student in StudentSelector.SelectedItems)
+            {
+                Analyse.excludedStudents.Add(student.id);
+            }
+
+            Analyse.findModules();
             ChartWindow c = new ChartWindow();
             c.ShowDialog();
 

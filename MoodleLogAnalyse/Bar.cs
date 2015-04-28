@@ -19,21 +19,21 @@ namespace MoodleLogAnalyse
         public Bar() : base()
         { }
 
-        public Bar(double data, double dataMax, string dataLabel, double graphicLimit, Point position, Brush lineColour, Color startFillColour, Color EndFillColour) :
+        public Bar(double data, double dataMax, string dataLabel, double barHeight, double graphicLimit, Point position, Brush lineColour, Color startFillColour, Color EndFillColour) :
             base(data, dataMax, dataLabel, graphicLimit, lineColour, startFillColour, EndFillColour)
         {
             this.dataBar.Fill = base.brush;
             this.dataBar.StrokeThickness = 1;
             this.dataBar.Stroke = base.outlineColour;
             this.dataBar.Width = base.drawLength;
-            this.dataBar.Height = 20;
+            this.dataBar.Height = barHeight;// 20;
             Canvas.SetLeft(this.dataBar, position.X + 350);
             Canvas.SetTop(this.dataBar, position.Y);
             this.dataLabel = new TextBlock(new Run(base.text));
             Canvas.SetLeft(this.dataLabel, position.X );
             Canvas.SetTop(this.dataLabel, position.Y);
             this.dataLabel.Width = 350;
-            this.dataLabel.Height = 20;
+            this.dataLabel.Height = barHeight;// 20;
             
             
         }

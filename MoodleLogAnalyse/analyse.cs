@@ -17,10 +17,11 @@ namespace MoodleLogAnalyse
         #region public attributes
         public static DataSet moodleData;  // Dataset containing the log data for analysis
         //id, instanceid, contextlevel, course, module, instance, type, description, time, action, url, userid, firstname, lastname, username
-
+        public static List<uint> excludedStudents = new List<uint>();  // Students to be excluded from operations
         public static SortedList<uint,Student> studentList = new SortedList<uint,Student>();  // A list of all the students in the log.
         public static SortedList<uint, Module> moduleList = new SortedList<uint, Module>();  // A list of all the modules in the log.
         public static SortedList<uint, ModuleType> moduleTypeList = new SortedList<uint, ModuleType>();  // A list of all the modules types in the log.
+        public static int selectedStudentCount { get { return studentList.Count - excludedStudents.Count; } } 
         #endregion
 
         #region data extraction methods
@@ -67,10 +68,14 @@ namespace MoodleLogAnalyse
             uint moodleId;  // Moodle unique id for the module
             uint typeId;  // Moodle unique id for a module type
 
+            
+
             moduleList.Clear();
 
             foreach (DataRow logRow in moodleData.Tables[0].Rows)
             {
+                if (excludedStudents.Contains(uint.Parse(logRow["userid"].ToString()))) continue; // If an excluded user skip this access
+
                 moodleId = uint.Parse(logRow["instanceid"].ToString());
                 typeId = uint.Parse(logRow["module"].ToString());
 
@@ -151,7 +156,7 @@ namespace MoodleLogAnalyse
             foreach (int row in deleteRows.OrderByDescending(item => item).ToList())
                 moodleData.Tables[0].Rows[row].Delete();
 
-            extractData();
+            //extractData();
         }
         #endregion
     }
