@@ -58,6 +58,7 @@ namespace MoodleLogAnalyse
             }
             int yPos = 0;
             Bar b;
+            Bar s;
                 Color colourBottom = (Color)ColorConverter.ConvertFromString("#FFE1A900"); //ARGB
                 Color colourTop = (Color)ColorConverter.ConvertFromString("#FFFFFF99");
                 Brush lineColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF000000"));
@@ -71,12 +72,21 @@ namespace MoodleLogAnalyse
                 //if (m.totalAccesses > maxModule) maxModule = m.totalAccesses;
                 yPos += 30;
                 barCount++;
+
+                //Total module access
                 b = new Bar(m.totalAccesses, maxModule, Analyse.moduleTypeList[m.type].name.Substring(0,3) + " : " + m.name, barLimit, new Point(10, yPos), lineColour, colourTop, colourBottom);
                 dataBars.Add(b);
                 Canvas.SetZIndex(b.dataBar, 1);
                 Canvas.SetZIndex(b.dataLabel, 2);
                 ChartCanvas.Children.Add(b.dataBar);
                 ChartCanvas.Children.Add(b.dataLabel);
+
+                // Unique student access count
+                s = new Bar(m.uniqueAccesses, maxModule, "", barLimit, new Point(10, yPos), lineColour, colourTop, colourBottom);
+                dataBars.Add(s);
+                Canvas.SetZIndex(s.dataBar, 2);
+                ChartCanvas.Children.Add(s.dataBar);
+                
             }
             ChartCanvas.Height = (barCount + 1) * 30;
             if (barCount > 0)

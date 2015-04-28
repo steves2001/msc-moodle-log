@@ -74,12 +74,9 @@ namespace MoodleLogAnalyse
                 moodleId = uint.Parse(logRow["instanceid"].ToString());
                 typeId = uint.Parse(logRow["module"].ToString());
 
-                if (moduleList.ContainsKey(moodleId))
-                {
-                    moduleList[moodleId]++; // Increment the module access count.
-                }
-                else
-                {
+                    // If current module does not exist in the module list create it
+                    if (!moduleList.ContainsKey(moodleId))
+                    {
                     moduleList.Add(moodleId,
                         new Module(moodleId,
                             uint.Parse(logRow["module"].ToString()),
@@ -88,8 +85,7 @@ namespace MoodleLogAnalyse
                     );
 
                     // Populate the list of module types in the course
-                    
-                    
+
                     if (!moduleTypeList.ContainsKey(typeId))
                     // Type did not exist add it to the list.
                     {
@@ -100,6 +96,9 @@ namespace MoodleLogAnalyse
                     Console.WriteLine(moduleList[moodleId].ToString());  
 #endif
                 }
+
+                moduleList[moodleId]++; // Increment the module access count.
+                moduleList[moodleId].addStudent(uint.Parse(logRow["userid"].ToString()));
                 moduleTypeList[typeId]++;  // Total Accesses for that type of module
             }
 #if DEBUG
@@ -133,6 +132,24 @@ namespace MoodleLogAnalyse
             }
 
             moodleData.Tables[0].Rows[0].Delete();
+           
+            // Filter out the none student accesses
+            int rowCounter = 0;
+            List<int> deleteRows = new List<int>();
+
+            foreach (DataRow logRow in moodleData.Tables[0].Rows)
+            {
+                if (logRow["username"].ToString().IndexOf("@student") <= 0)
+                {
+                    deleteRows.Add(rowCounter);
+                    rowCounter++;
+                    continue;
+                }
+                rowCounter++;
+            }
+
+            foreach (int row in deleteRows.OrderByDescending(item => item).ToList())
+                moodleData.Tables[0].Rows[row].Delete();
 
             extractData();
         }

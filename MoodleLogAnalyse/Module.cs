@@ -17,6 +17,9 @@ namespace MoodleLogAnalyse
         public uint type { get; set; } // The moodle module type id
         public string name { get; set; } // The name of the module
         public uint totalAccesses { get; set; } // total accesses for this module
+        public uint uniqueAccesses { get { return (uint)uniqueStudents.Count(); } }
+        
+        private List<uint> uniqueStudents = new List<uint>(); // List of unique students id that accessed the module
         #endregion
 
         #region constructors
@@ -35,6 +38,14 @@ namespace MoodleLogAnalyse
             type = moduleType;
             name = moduleName;
             totalAccesses = 0;
+        }
+
+        #endregion
+
+        #region public methods
+        public void addStudent(uint studentId)
+        {
+            if (!uniqueStudents.Contains(studentId)) uniqueStudents.Add(studentId);
         }
 
         #endregion
