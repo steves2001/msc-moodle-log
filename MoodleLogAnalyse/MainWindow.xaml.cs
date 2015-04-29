@@ -48,7 +48,7 @@ namespace MoodleLogAnalyse
                 Analyse.getData(dlg.FileName);
                 Analyse.findStudents();
                 StudentSelector.ItemsSource = Analyse.studentList.Values; // Add the module types to the list box
-                //StudentSelector.SelectAll(); // Start with everything selected
+                StudentSelector.SelectAll(); // Start with everything selected
 
             }
         }

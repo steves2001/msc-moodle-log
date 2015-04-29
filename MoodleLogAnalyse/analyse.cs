@@ -74,7 +74,7 @@ namespace MoodleLogAnalyse
 
             foreach (DataRow logRow in moodleData.Tables[0].Rows)
             {
-                if (excludedStudents.Contains(uint.Parse(logRow["userid"].ToString()))) continue; // If an excluded user skip this access
+                
 
                 moodleId = uint.Parse(logRow["instanceid"].ToString());
                 typeId = uint.Parse(logRow["module"].ToString());
@@ -101,7 +101,8 @@ namespace MoodleLogAnalyse
                     Console.WriteLine(moduleList[moodleId].ToString());  
 #endif
                 }
-
+                // if the current log entry is for a ignored student don't increment the access counts.
+                if (excludedStudents.Contains(uint.Parse(logRow["userid"].ToString()))) continue; // If an excluded user skip this access
                 moduleList[moodleId]++; // Increment the module access count.
                 moduleList[moodleId].addStudent(uint.Parse(logRow["userid"].ToString()));
                 moduleTypeList[typeId]++;  // Total Accesses for that type of module
