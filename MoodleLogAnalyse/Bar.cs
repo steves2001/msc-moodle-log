@@ -32,8 +32,10 @@ namespace MoodleLogAnalyse
             this.dataLabel = new TextBlock(new Run(base.text));
             Canvas.SetLeft(this.dataLabel, position.X - labelWidth);
             Canvas.SetTop(this.dataLabel, position.Y);
+            
             this.dataLabel.Width = labelWidth;
             this.dataLabel.Height = barHeight;
+            this.dataLabel.VerticalAlignment = VerticalAlignment.Center;
             
             
         }
