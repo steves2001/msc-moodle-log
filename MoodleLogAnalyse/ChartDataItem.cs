@@ -27,7 +27,9 @@ namespace MoodleLogAnalyse
         #endregion
 
         #region graphical properties
-
+        public string startFill;
+        public string endFill;
+        public string lineCol;
         public double maxLength; // Max size of the data item
         public double drawLength; // Length of to draw
         public LinearGradientBrush brush;
@@ -51,21 +53,25 @@ namespace MoodleLogAnalyse
             outlineColour = Brushes.Black;
         }
 
-        public ChartDataItem(double data, double dataMax, string dataLabel, double graphicLimit, Brush lineColour, Color startFillColour, Color EndFillColour)
+        public ChartDataItem(double data, double dataMax, string dataLabel, double graphicLimit, string lineColour, string startFillColour, string endFillColour)
         {
             maxLength = graphicLimit;
             valueLimit = dataMax;
             value = data;
             text = dataLabel;
+            startFill = startFillColour;
+            endFill = endFillColour;
+            lineCol = lineColour;
+
             percentage = value / valueLimit;
 
             drawLength = maxLength * percentage;
             brush = new LinearGradientBrush();
             brush.StartPoint = new Point(0.5, 0);
             brush.EndPoint = new Point(0.5, 1);
-            brush.GradientStops.Add(new GradientStop(startFillColour, 0.0));
-            brush.GradientStops.Add(new GradientStop(EndFillColour, 1.0));
-            outlineColour = lineColour;
+            brush.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString(startFillColour), 0.0));
+            brush.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString(endFillColour), 1.0));
+            outlineColour = (SolidColorBrush)(new BrushConverter().ConvertFrom(lineColour));
         }
 
 

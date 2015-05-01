@@ -20,7 +20,7 @@ namespace MoodleLogAnalyse
     /// </summary>
     public partial class ChartWindow : Window
     {
-        List<Bar> dataBars = new List<Bar>();
+        //List<Bar> dataBars = new List<Bar>();
         Rectangle minimumLimit = new Rectangle();
         Rectangle aboveLimit = new Rectangle();
 
@@ -32,6 +32,36 @@ namespace MoodleLogAnalyse
             ModuleSelector.ItemsSource = Analyse.moduleTypeList.Values; // Add the module types to the list box
             ModuleSelector.SelectAll(); // Start with everything selected
             drawBarChart();
+
+        }
+
+        private TextBlock createLabel (double left, double top, double width, double height, int z, String text, TextAlignment align , VerticalAlignment valign )
+        {
+            TextBlock label = new TextBlock(new Run(text));
+            Canvas.SetLeft(label, left);
+            Canvas.SetTop(label, top);
+            label.Width = width;
+            label.Height = height;
+            Canvas.SetZIndex(label, z);
+            label.TextAlignment = align;
+            label.VerticalAlignment = valign;
+            return label;
+        }
+
+        private Rectangle createRectangle(double left, double top, double width, double height, int z, string lineColour, string fillColour )
+        {
+            Rectangle rect = new Rectangle();
+
+            rect.StrokeThickness = 1;
+            rect.Stroke = (SolidColorBrush)(new BrushConverter().ConvertFrom(lineColour));;
+            rect.Fill = (SolidColorBrush)(new BrushConverter().ConvertFrom(fillColour));
+            Canvas.SetLeft(rect, left);
+            Canvas.SetTop(rect, top);
+            rect.Width = width;
+            rect.Height = height;
+            Canvas.SetZIndex(rect, z);
+
+            return rect;
 
         }
 
@@ -66,21 +96,22 @@ namespace MoodleLogAnalyse
             int barSpacing = 30;  // distance between bars
 
             double barXStart = 490;  // Where to start drawing the bars from
-            double labelWidth = 480; // Size of the label
+            double labelWidth = 440; // Size of the label
 
             string statistics = "";  // Number of unique students accessed a module
-            string modDetails = "";  // Module type and decription for use in the label
+            string modDetails = "";  // Module description for use in the label
+            string modType = "";     // Module type  for use in the label
 
             // Colours for bar showing total accesses
-            Color accBarBtm = (Color)ColorConverter.ConvertFromString("#FFE1A900"); //ARGB
-            Color accBarTop = (Color)ColorConverter.ConvertFromString("#FFFFFF99");
+            string accBarBtm = "#FFE1A900"; //ARGB
+            string accBarTop = "#FFFFFF99";
 
             // Colours for bar showing total unique student accesses
-            Color stuBarBtm = (Color)ColorConverter.ConvertFromString("#FF47A15F"); //ARGB
-            Color stuBarTop = (Color)ColorConverter.ConvertFromString("#FF63E686");
+            string stuBarBtm = "#FF47A15F"; //ARGB
+            string stuBarTop = "#FF63E686";
 
             // Line colour for the bars
-            Brush lineColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF000000"));
+            string lineColour = "#FF000000";
 
             // Find the module with the highest access count
             foreach (Module m in Analyse.moduleList.Values)
@@ -93,20 +124,10 @@ namespace MoodleLogAnalyse
             ChartCanvas.Children.Clear();
 
             // Label headings
-            TextBlock labelHeading = new TextBlock(new Run("TYPE : DESCRIPTION"));
-            Canvas.SetLeft(labelHeading, 10);
-            Canvas.SetTop(labelHeading, 10);
-            labelHeading.Width = 200;
-            labelHeading.Height = 20;
-            ChartCanvas.Children.Add(labelHeading);
-            
-            TextBlock statHeading = new TextBlock(new Run("UNIQUE ACCESSES"));
-            Canvas.SetLeft(statHeading, barXStart - 210);
-            Canvas.SetTop(statHeading, 10);
-            statHeading.Width = 200;
-            statHeading.Height = 20;
-            statHeading.TextAlignment = TextAlignment.Right;
-            ChartCanvas.Children.Add(statHeading);
+
+            ChartCanvas.Children.Add(createLabel(barXStart - 210,10,200,20, 0, "UNIQUE ACCESSES", TextAlignment.Right, VerticalAlignment.Center ));
+            ChartCanvas.Children.Add(createLabel( 10, 10, 30, 20, 0, "TYPE", TextAlignment.Right,VerticalAlignment.Center));
+            ChartCanvas.Children.Add(createLabel(50, 10, 200, 20, 0, "DESCRIPTION", TextAlignment.Left,VerticalAlignment.Center));
             
             foreach (Module m in Analyse.moduleList.Values)
             {
@@ -116,22 +137,19 @@ namespace MoodleLogAnalyse
                 barCount++;
 
                 statistics = string.Format("{0:000} ", m.uniqueAccesses);
-                modDetails = Analyse.moduleTypeList[m.type].name.Substring(0, 3).ToUpper() + "  : " + m.name;
-
+                modDetails =  m.name;
+                modType = Analyse.moduleTypeList[m.type].name.Substring(0, 3).ToUpper();
+                // Module type label
+                ChartCanvas.Children.Add(createLabel(10, yPos, 30, 20, 0, modType, TextAlignment.Right, VerticalAlignment.Center));
+                
                 //Total module access bar
-                accBar = new Bar(m.totalAccesses, maxModule, modDetails, labelWidth, 20, barLimit, new Point(barXStart, yPos), lineColour, accBarTop, accBarBtm);
-                dataBars.Add(accBar);
-                Canvas.SetZIndex(accBar.dataBar, 1);
-                Canvas.SetZIndex(accBar.dataLabel, 2);
+                accBar = new Bar(m.totalAccesses, maxModule, modDetails, labelWidth, 24, barLimit, new Point(barXStart, yPos),1, lineColour, accBarTop, accBarBtm);
                 ChartCanvas.Children.Add(accBar.dataBar);
                 ChartCanvas.Children.Add(accBar.dataLabel);
 
                 // Unique student access count bar
-                stuBar = new Bar(m.uniqueAccesses, maxModule, statistics, 30, 14, barLimit, new Point(barXStart, yPos + 3), lineColour, stuBarTop, stuBarBtm);
-                dataBars.Add(stuBar);
-                Canvas.SetZIndex(stuBar.dataBar, 2);
+                stuBar = new Bar(m.uniqueAccesses, maxModule, statistics, 30, 18, barLimit, new Point(barXStart, yPos + 3),2, lineColour, stuBarTop, stuBarBtm);
                 ChartCanvas.Children.Add(stuBar.dataBar);
-                Canvas.SetZIndex(stuBar.dataLabel, 2);
                 ChartCanvas.Children.Add(stuBar.dataLabel);
             }
 
@@ -141,28 +159,18 @@ namespace MoodleLogAnalyse
             {
                 double accessPercentage = (double)Analyse.selectedStudentCount / (double)maxModule;
                 //Draw the minimum expected accesses
-                minimumLimit.StrokeThickness = 1;
-                minimumLimit.Stroke = lineColour;
-                minimumLimit.Fill = (SolidColorBrush)(new BrushConverter().ConvertFrom("#55CC0000"));
-                Canvas.SetLeft(minimumLimit, barXStart);
-                Canvas.SetTop(minimumLimit, 30);
-                Canvas.SetZIndex(minimumLimit, -1);
-                minimumLimit.Width = barLimit * accessPercentage;
-                minimumLimit.Height = yPos - 10;
-                ChartCanvas.Children.Add(minimumLimit);
-
+                ChartCanvas.Children.Add(createRectangle(barXStart, 30, barLimit * accessPercentage, yPos - 6, -1, "#FF000000", "#55CC0000"));
                 //Draw the above expected accesses
-                aboveLimit.StrokeThickness = 1;
-                aboveLimit.Stroke = lineColour;
-                aboveLimit.Fill = (SolidColorBrush)(new BrushConverter().ConvertFrom("#5500CC00"));
-                Canvas.SetLeft(aboveLimit, barXStart  + barLimit * accessPercentage);
-                Canvas.SetTop(aboveLimit, 30);
-                Canvas.SetZIndex(aboveLimit, -1);
-                aboveLimit.Width = barLimit * (1.0 - accessPercentage);
-                aboveLimit.Height = yPos - 10;
-                ChartCanvas.Children.Add(aboveLimit);
+                ChartCanvas.Children.Add(createRectangle(barXStart + barLimit * accessPercentage, 30, barLimit * (1.0 - accessPercentage), yPos - 6, -1, "#FF000000", "#5500CC00"));
+
+                ChartCanvas.Children.Add(createLabel(barXStart - 8, 10, 16, 20, 0, "0", TextAlignment.Center, VerticalAlignment.Center));
+                ChartCanvas.Children.Add(createLabel(barXStart + barLimit * accessPercentage - 25, 10, 50, 20, 0, Analyse.selectedStudentCount.ToString(), TextAlignment.Center, VerticalAlignment.Center));
+                ChartCanvas.Children.Add(createLabel(barXStart + barLimit - 50, 10, 50, 20, 0, maxModule.ToString(), TextAlignment.Right, VerticalAlignment.Center));
+
             }
         }
+
+        
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
