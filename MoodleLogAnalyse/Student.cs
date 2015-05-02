@@ -17,6 +17,7 @@ namespace MoodleLogAnalyse
         public string lastname { get; set; }
         public string username { get; set; }
         public bool active { get; set; }
+        public string grade { get; set; }
         #endregion
 
         #region constructors
@@ -27,6 +28,7 @@ namespace MoodleLogAnalyse
             lastname = "Lastname";
             username = "me@collegemail.ac.uk";
             active = true;
+            grade = "X";
         }
         /// <summary>
         /// Constructs a student object with the basic details
@@ -42,6 +44,7 @@ namespace MoodleLogAnalyse
             lastname = lastName;
             username = userName;
             active = true;
+            grade = "X";
         }
         #endregion
         #region overides

@@ -8,7 +8,9 @@
         <CommandBinding Command="Save" Executed="SaveCommand_Executed" CanExecute="CommonCommandBinding_CanExecute" />
 
     </Window.CommandBindings>
-
+    <Window.Resources>
+        <CollectionViewSource x:Key="ItemCollectionViewSource" CollectionViewType="ListCollectionView"/>
+    </Window.Resources>
     <Grid>
         <DockPanel LastChildFill="True">
             <ToolBarTray VerticalAlignment="Top" DockPanel.Dock="Top">
@@ -16,30 +18,19 @@
                     <Button Command="New" Content="New" />
                     <Button Command="Open" Content="Open" />
                     <Button Command="Save" Content="Save" />
+                </ToolBar>
+                <ToolBar x:Name="Charts">
                     <Button Name="Chart" Content="Chart" Click="ChartCommand_Executed"/>
                 </ToolBar>
             </ToolBarTray>
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="300" />
                     <ColumnDefinition Width="*" />
+                    
                 </Grid.ColumnDefinitions>
-                <ListBox x:Name="StudentSelector" HorizontalContentAlignment="Stretch" Margin="0,0,0,0.4" SelectionMode="Multiple" Grid.Column="1">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="0,2">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="30" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{Binding id}" />
-                                <TextBlock Grid.Column="1" Text="{Binding firstname}" />
-                                <TextBlock Grid.Column="2" Text="{Binding lastname}" />
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                <DataGrid x:Name="studentDataGrid" DataContext="{StaticResource ItemCollectionViewSource}"  ItemsSource="{Binding}"  AutoGenerateColumns="True" Grid.Column="0">
+                </DataGrid>
+                
             </Grid>
 
         </DockPanel>

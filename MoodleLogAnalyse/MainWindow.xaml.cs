@@ -21,10 +21,10 @@ namespace MoodleLogAnalyse
     /// </summary>
     public partial class MainWindow : Window
     {
+        CollectionViewSource itemCollectionViewSource;
         public MainWindow()
         {
             InitializeComponent();
-
         }
 
         private void CommonCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -47,9 +47,9 @@ namespace MoodleLogAnalyse
             {
                 Analyse.getData(dlg.FileName);
                 Analyse.findStudents();
-                StudentSelector.ItemsSource = Analyse.studentList.Values; // Add the module types to the list box
-                StudentSelector.SelectAll(); // Start with everything selected
 
+                itemCollectionViewSource = (CollectionViewSource)(FindResource("ItemCollectionViewSource"));
+                itemCollectionViewSource.Source = Analyse.studentList;
             }
         }
 
@@ -58,19 +58,16 @@ namespace MoodleLogAnalyse
         }
         private void ChartCommand_Executed(object sender, RoutedEventArgs e)
         {
-            if (StudentSelector.Items.Count == StudentSelector.SelectedItems.Count) return;
+            studentDataGrid.CommitEdit();
+            studentDataGrid.CommitEdit();
 
-            Analyse.excludedStudents.Clear();
-
-            foreach (Student student in StudentSelector.SelectedItems)
+            if (Analyse.selectedStudentCount > 0)
             {
-                Analyse.excludedStudents.Add(student.id);
+                Analyse.findExcludedStudents();
+                Analyse.findModules();
+                ChartWindow c = new ChartWindow();
+                c.ShowDialog();
             }
-
-            Analyse.findModules();
-            ChartWindow c = new ChartWindow();
-            c.ShowDialog();
-
         }
 
     }

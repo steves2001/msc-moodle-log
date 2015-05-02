@@ -18,10 +18,10 @@ namespace MoodleLogAnalyse
         public static DataSet moodleData;  // Dataset containing the log data for analysis
         //id, instanceid, contextlevel, course, module, instance, type, description, time, action, url, userid, firstname, lastname, username
         public static List<uint> excludedStudents = new List<uint>();  // Students to be excluded from operations
-        public static SortedList<uint,Student> studentList = new SortedList<uint,Student>();  // A list of all the students in the log.
+        public static List<Student> studentList = new List<Student>();  // A list of all the students in the log.
         public static SortedList<uint, Module> moduleList = new SortedList<uint, Module>();  // A list of all the modules in the log.
         public static SortedList<uint, ModuleType> moduleTypeList = new SortedList<uint, ModuleType>();  // A list of all the modules types in the log.
-        public static int selectedStudentCount { get { return studentList.Count - excludedStudents.Count; } } 
+        public static int selectedStudentCount { get { return activeStudentCount(); } } 
         #endregion
 
         #region data extraction methods
@@ -31,6 +31,29 @@ namespace MoodleLogAnalyse
            findModules();
         }
 
+        private static int activeStudentCount()
+        {
+            int count = 0;
+            foreach (Student s in studentList)
+                if (s.active) count++;
+            return count;
+
+        }
+
+        public static void findExcludedStudents()
+        {
+            excludedStudents.Clear();
+
+            foreach(Student s in studentList)
+            {
+                if(!s.active)
+                {
+                    excludedStudents.Add(s.id);
+                }
+            }
+
+        }
+
         /// <summary>
         /// Loop through the data extracting unique students into the sorted studentList data structure
         /// </summary>
@@ -38,25 +61,27 @@ namespace MoodleLogAnalyse
         {
             uint moodleId;  // Moodle unique id for the user
 
-            studentList.Clear();
+
+            studentList.Clear(); // New
 
             foreach (DataRow logRow in moodleData.Tables[0].Rows)
             {
                 moodleId = uint.Parse(logRow["userid"].ToString());
 
-                if (!studentList.ContainsKey(moodleId))
+
+                if (studentList.FindIndex(sId => sId.id == moodleId) < 0)
                 {
-                    studentList.Add(moodleId,
+                    studentList.Add(
                         new Student(moodleId,
                             logRow["firstname"].ToString(),
                             logRow["lastname"].ToString(),
                             logRow["username"].ToString()
                             )
                     );
-#if DEBUG
-                    Console.WriteLine(studentList[moodleId].ToString());
-#endif
                 }
+
+
+
             }
         }  // End findStudents
 
