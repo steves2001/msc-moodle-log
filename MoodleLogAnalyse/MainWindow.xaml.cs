@@ -22,9 +22,16 @@ namespace MoodleLogAnalyse
     public partial class MainWindow : Window
     {
         CollectionViewSource itemCollectionViewSource;
+        public static String gradeFilter = "P,M,D";
+        public static String GradeFilters
+        {
+            get { return gradeFilter; }
+            set { gradeFilter = value; }
+        }
         public MainWindow()
         {
             InitializeComponent();
+            
         }
 
         private void CommonCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -56,10 +63,47 @@ namespace MoodleLogAnalyse
         private void SaveCommand_Executed(object sender, RoutedEventArgs e)
         {
         }
-        private void ChartCommand_Executed(object sender, RoutedEventArgs e)
+
+        private void SelectAllCommand_Executed(object sender, RoutedEventArgs e)
+        {
+            commitEdits();
+            Analyse.selectAllStudents();
+            studentDataGrid.Items.Refresh();
+        }
+
+        private void SelectNoneCommand_Executed(object sender, RoutedEventArgs e)
+        {
+            commitEdits();
+            Analyse.clearAllStudents();
+            studentDataGrid.Items.Refresh();
+            
+        }
+
+        private void SelectInvertCommand_Executed(object sender, RoutedEventArgs e)
+        {
+            commitEdits();
+            Analyse.invertAllStudents();
+            studentDataGrid.Items.Refresh();
+        }
+
+
+        private void SelectFilterCommand_Executed(object sender, RoutedEventArgs e)
+        {
+            commitEdits();
+
+            Analyse.selectStudentsOnGrade(gradeFilter);
+            studentDataGrid.Items.Refresh();
+        }
+
+        private void commitEdits()
         {
             studentDataGrid.CommitEdit();
             studentDataGrid.CommitEdit();
+        }
+
+        private void ChartCommand_Executed(object sender, RoutedEventArgs e)
+        {
+            commitEdits();
 
             if (Analyse.selectedStudentCount > 0)
             {

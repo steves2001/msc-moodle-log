@@ -1,7 +1,8 @@
 ﻿<Window x:Name="TheMainWindow" x:Class="MoodleLogAnalyse.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="411.6" Width="609.8">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+        DataContext="{Binding Mode=OneWay, RelativeSource={RelativeSource Self}}"
+        Title="MainWindow" Height="411.6" Width="609.8" WindowStartupLocation="CenterScreen">
     <Window.CommandBindings>
         <CommandBinding Command="New" Executed="NewCommand_Executed" CanExecute="CommonCommandBinding_CanExecute" />
         <CommandBinding Command="Open" Executed="OpenCommand_Executed" CanExecute="CommonCommandBinding_CanExecute" />
@@ -14,13 +15,20 @@
     <Grid>
         <DockPanel LastChildFill="True">
             <ToolBarTray VerticalAlignment="Top" DockPanel.Dock="Top">
-                <ToolBar>
+                <ToolBar BandIndex="0">
                     <Button Command="New" Content="New" />
                     <Button Command="Open" Content="Open" />
                     <Button Command="Save" Content="Save" />
                 </ToolBar>
-                <ToolBar x:Name="Charts">
+                <ToolBar x:Name="Charts" BandIndex="2">
                     <Button Name="Chart" Content="Chart" Click="ChartCommand_Executed"/>
+                </ToolBar>
+                <ToolBar x:Name="Selections" BandIndex="1">
+                    <Button Name="SelectAll" Content="Select All" Click="SelectAllCommand_Executed"/>
+                    <Button Name="SelectNone" Content="Clear All" Click="SelectNoneCommand_Executed"/>
+                    <Button Name="SelectInvert" Content="Invert All" Click="SelectInvertCommand_Executed"/>
+                    <TextBox Name="GradeFilter" Text="{Binding Path=GradeFilters}" Margin="0,0,0,0.4" Width="72" />
+                    <Button Name="SelectFilter" Content="Filter Grade" Click="SelectFilterCommand_Executed"/>
                 </ToolBar>
             </ToolBarTray>
             <Grid>
@@ -28,7 +36,27 @@
                     <ColumnDefinition Width="*" />
                     
                 </Grid.ColumnDefinitions>
-                <DataGrid x:Name="studentDataGrid" DataContext="{StaticResource ItemCollectionViewSource}"  ItemsSource="{Binding}"  AutoGenerateColumns="True" Grid.Column="0">
+                <!--                <DataGrid x:Name="studentDataGrid" DataContext="{StaticResource ItemCollectionViewSource}"  ItemsSource="{Binding}"  AutoGenerateColumns="True" Grid.Column="0" CanUserAddRows="False">
+-->
+                <DataGrid x:Name="studentDataGrid"  DataContext="{StaticResource ItemCollectionViewSource}"  ItemsSource="{Binding}"  AutoGenerateColumns="False" Grid.Column="0" CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Path=id}" ClipboardContentBinding="{x:Null}" Header="Id" Width="60"/>
+                        <DataGridTextColumn Binding="{Binding Path=firstname}" ClipboardContentBinding="{x:Null}" Header="First Name" Width="200"/>
+                        <DataGridTextColumn Binding="{Binding Path=lastname}" ClipboardContentBinding="{x:Null}" Header="Last Name" Width="200"/>
+                        <DataGridTextColumn Binding="{Binding Path=username}" ClipboardContentBinding="{x:Null}" Header="User Name" Visibility="Hidden"/>
+                        <DataGridCheckBoxColumn Binding="{Binding Path=active}" ClipboardContentBinding="{x:Null}" Header="Selected" Width="60"/>
+                        <DataGridComboBoxColumn ClipboardContentBinding="{x:Null}" SelectedValueBinding="{Binding Path=grade}"  SelectedValuePath="Content" SelectedItemBinding="{x:Null}" TextBinding="{x:Null}" Header="Grade" Width="50" MinWidth="50">
+                            <DataGridComboBoxColumn.ItemsSource>
+                                <CompositeCollection>
+                                    <ComboBoxItem Content="X"/>
+                                    <ComboBoxItem Content="R"/>
+                                    <ComboBoxItem Content="P"/>
+                                    <ComboBoxItem Content="M"/>
+                                    <ComboBoxItem Content="D"/>
+                                </CompositeCollection>
+                            </DataGridComboBoxColumn.ItemsSource>
+                        </DataGridComboBoxColumn>
+                    </DataGrid.Columns>
                 </DataGrid>
                 
             </Grid>

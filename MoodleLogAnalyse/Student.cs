@@ -50,7 +50,7 @@ namespace MoodleLogAnalyse
         #region overides
         public override string ToString()
         {
-            return id + ", " + firstname + ", " + lastname + ", " + username + ", " + active.ToString();
+            return id + ", " + firstname + ", " + lastname + ", " + username + ", " + active.ToString() + ", " + grade;
         }
         #endregion
     } // End Student

@@ -1,10 +1,13 @@
-﻿using System;
+﻿//#define DETAILED
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OdsReadWrite;
 using System.Data;
+using System.Text.RegularExpressions;
 
 namespace MoodleLogAnalyse
 {
@@ -30,6 +33,41 @@ namespace MoodleLogAnalyse
            findStudents();
            findModules();
         }
+
+        public static void selectAllStudents()
+        {
+            foreach (Student s in studentList)
+                s.active = true;
+        }
+
+        public static void clearAllStudents()
+        {
+            foreach (Student s in studentList)
+                s.active = false;
+        }
+
+        public static void invertAllStudents()
+        {
+            foreach (Student s in studentList)
+                s.active = !s.active;
+        }
+
+        public static void selectStudentsOnGrade(string gradeString)
+        {
+
+            gradeString = Regex.Replace(gradeString, @"\s+", "");
+            string[] grades = gradeString.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (Student s in studentList)
+                foreach(string grade in grades)
+                    if (s.grade.Contains(grade))
+                    {
+                        s.active = true;
+                        break;
+                    }
+                    else
+                        s.active = false;
+        }
+
 
         private static int activeStudentCount()
         {
@@ -122,7 +160,7 @@ namespace MoodleLogAnalyse
                         moduleTypeList.Add(typeId, new ModuleType(typeId, logRow["type"].ToString()));
                         
                     }
-#if DEBUG           
+#if DETAILED           
                     Console.WriteLine(moduleList[moodleId].ToString());  
 #endif
                 }
@@ -132,7 +170,7 @@ namespace MoodleLogAnalyse
                 moduleList[moodleId].addStudent(uint.Parse(logRow["userid"].ToString()));
                 moduleTypeList[typeId]++;  // Total Accesses for that type of module
             }
-#if DEBUG
+#if DETAILED
             Console.WriteLine("Highest Access Count = " + findMaxModuleAccessCount());
 #endif
         }  // End findModules
