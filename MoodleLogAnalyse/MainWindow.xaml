@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
         DataContext="{Binding Mode=OneWay, RelativeSource={RelativeSource Self}}"
         Title="MainWindow" Height="411.6" Width="609.8" WindowStartupLocation="CenterScreen">
+    
     <Window.CommandBindings>
         <CommandBinding Command="New" Executed="NewCommand_Executed" CanExecute="CommonCommandBinding_CanExecute" />
         <CommandBinding Command="Open" Executed="OpenCommand_Executed" CanExecute="CommonCommandBinding_CanExecute" />
@@ -40,19 +41,19 @@
 -->
                 <DataGrid x:Name="studentDataGrid"  DataContext="{StaticResource ItemCollectionViewSource}"  ItemsSource="{Binding}"  AutoGenerateColumns="False" Grid.Column="0" CanUserAddRows="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding Path=id}" ClipboardContentBinding="{x:Null}" Header="Id" Width="60"/>
-                        <DataGridTextColumn Binding="{Binding Path=firstname}" ClipboardContentBinding="{x:Null}" Header="First Name" Width="200"/>
-                        <DataGridTextColumn Binding="{Binding Path=lastname}" ClipboardContentBinding="{x:Null}" Header="Last Name" Width="200"/>
+                        <DataGridTextColumn Binding="{Binding Path=id}" ClipboardContentBinding="{x:Null}" Header="Id" Width="60" MinWidth="60"/>
+                        <DataGridTextColumn Binding="{Binding Path=firstname}" ClipboardContentBinding="{x:Null}" Header="First Name" Width="*" MinWidth="200"/>
+                        <DataGridTextColumn Binding="{Binding Path=lastname}" ClipboardContentBinding="{x:Null}" Header="Last Name" Width="*" MinWidth="200"/>
                         <DataGridTextColumn Binding="{Binding Path=username}" ClipboardContentBinding="{x:Null}" Header="User Name" Visibility="Hidden"/>
                         <DataGridCheckBoxColumn Binding="{Binding Path=active}" ClipboardContentBinding="{x:Null}" Header="Selected" Width="60"/>
                         <DataGridComboBoxColumn ClipboardContentBinding="{x:Null}" SelectedValueBinding="{Binding Path=grade}"  SelectedValuePath="Content" SelectedItemBinding="{x:Null}" TextBinding="{x:Null}" Header="Grade" Width="50" MinWidth="50">
                             <DataGridComboBoxColumn.ItemsSource>
                                 <CompositeCollection>
-                                    <ComboBoxItem Content="X"/>
-                                    <ComboBoxItem Content="R"/>
-                                    <ComboBoxItem Content="P"/>
-                                    <ComboBoxItem Content="M"/>
-                                    <ComboBoxItem Content="D"/>
+                                    <ComboBoxItem Content="X" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                                    <ComboBoxItem Content="R" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                                    <ComboBoxItem Content="P" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                                    <ComboBoxItem Content="M" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                                    <ComboBoxItem Content="D" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
                                 </CompositeCollection>
                             </DataGridComboBoxColumn.ItemsSource>
                         </DataGridComboBoxColumn>
