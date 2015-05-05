@@ -166,9 +166,14 @@ namespace MoodleLogAnalyse
                 }
                 // if the current log entry is for a ignored student don't increment the access counts.
                 if (excludedStudents.Contains(uint.Parse(logRow["userid"].ToString()))) continue; // If an excluded user skip this access
-                moduleList[moodleId]++; // Increment the module access count.
-                moduleList[moodleId].addStudent(uint.Parse(logRow["userid"].ToString()));
-                moduleTypeList[typeId]++;  // Total Accesses for that type of module
+                
+                // only increment the counts if there is an allowed action e.g. add, complete
+                if (moduleTypeList[typeId].trackAction(logRow["action"].ToString()))
+                {
+                    moduleList[moodleId].addStudent(uint.Parse(logRow["userid"].ToString()));
+                    moduleList[moodleId]++; // Increment the module access count.
+                    moduleTypeList[typeId]++;  // Total Accesses for that type of module
+                }
             }
 #if DETAILED
             Console.WriteLine("Highest Access Count = " + findMaxModuleAccessCount());

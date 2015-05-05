@@ -11,13 +11,21 @@ namespace MoodleLogAnalyse
         public uint id { get; set; }
         public uint totalAccesses { get; set; }
         public string name { get; set; }
-
+        public Dictionary<string,bool> allowedActions ;
         public ModuleType()
         {
             id = 0;
             totalAccesses = 0;
             name = "Blank";
+            allowedActions = new Dictionary<string, bool>() { { "submit", true }, { "update", true }, { "view", true } };
+        }
 
+        public bool trackAction(string action)
+        {
+            if(allowedActions.ContainsKey(action))
+                return allowedActions[action];
+
+            return false;
         }
 
         public ModuleType(uint moduleId, string moduleName)
@@ -25,6 +33,30 @@ namespace MoodleLogAnalyse
             id = moduleId;
             totalAccesses = 0;
             name = moduleName;
+            switch(moduleName)
+            {
+                case "assign":
+                    allowedActions = new Dictionary<string, bool>() { { "submit", true }, { "view", false }, { "add", false } };
+                    break;
+                case "checklist":
+                    allowedActions = new Dictionary<string, bool>() { { "complete", true }, { "update checks", false }, { "view", false }, { "add", false } };
+                    break;
+                case "page":
+                    allowedActions = new Dictionary<string, bool>() { { "submit", false }, { "view", true }, { "add", false } };
+                    break;
+                case "resource":
+                    allowedActions = new Dictionary<string, bool>() { { "submit", false }, { "view", true }, { "add", false } };
+                    break;
+                case "url":
+                    allowedActions = new Dictionary<string, bool>() { { "submit", false }, { "view", true }, { "add", false } };
+                    break;
+                case "workshop":
+                    allowedActions = new Dictionary<string, bool>() { { "add assessment", true }, { "view", false } };
+                    break;
+                default:
+                    allowedActions = new Dictionary<string, bool>() { { "submit", true }, { "update", true }, { "view", true } };
+                    break;
+            }
 
         }
 
