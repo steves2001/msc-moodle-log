@@ -37,9 +37,7 @@
                     <ColumnDefinition Width="*" />
                     
                 </Grid.ColumnDefinitions>
-                <!--                <DataGrid x:Name="studentDataGrid" DataContext="{StaticResource ItemCollectionViewSource}"  ItemsSource="{Binding}"  AutoGenerateColumns="True" Grid.Column="0" CanUserAddRows="False">
--->
-                <DataGrid x:Name="studentDataGrid"  DataContext="{StaticResource ItemCollectionViewSource}"  ItemsSource="{Binding}"  AutoGenerateColumns="False" Grid.Column="0" CanUserAddRows="False">
+                   <DataGrid x:Name="studentDataGrid"  DataContext="{StaticResource ItemCollectionViewSource}"  ItemsSource="{Binding}"  AutoGenerateColumns="False" Grid.Column="0" CanUserAddRows="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Path=id}" ClipboardContentBinding="{x:Null}" Header="Id" Width="60" MinWidth="60"/>
                         <DataGridTextColumn Binding="{Binding Path=firstname}" ClipboardContentBinding="{x:Null}" Header="First Name" Width="*" MinWidth="200"/>

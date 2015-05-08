@@ -8,13 +8,14 @@ using System.Threading.Tasks;
 using OdsReadWrite;
 using System.Data;
 using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace MoodleLogAnalyse
 {
     class Analyse
     {
         #region private attributes
-        private static OdsReaderWriter fileReader = new OdsReaderWriter();  // Generic public domain ODS reader class
+        private static OdsReaderWriter fileAccess = new OdsReaderWriter();  // Generic public domain ODS reader class
         #endregion
 
         #region public attributes
@@ -24,14 +25,14 @@ namespace MoodleLogAnalyse
         public static List<Student> studentList = new List<Student>();  // A list of all the students in the log.
         public static SortedList<uint, Module> moduleList = new SortedList<uint, Module>();  // A list of all the modules in the log.
         public static SortedList<uint, ModuleType> moduleTypeList = new SortedList<uint, ModuleType>();  // A list of all the modules types in the log.
-        public static int selectedStudentCount { get { return activeStudentCount(); } } 
+        public static int selectedStudentCount { get { return activeStudentCount(); } }
         #endregion
 
         #region data extraction methods
         public static void extractData()
         {
-           findStudents();
-           findModules();
+            findStudents();
+            findModules();
         }
 
         public static void selectAllStudents()
@@ -58,7 +59,7 @@ namespace MoodleLogAnalyse
             gradeString = Regex.Replace(gradeString, @"\s+", "");
             string[] grades = gradeString.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (Student s in studentList)
-                foreach(string grade in grades)
+                foreach (string grade in grades)
                     if (s.grade.Contains(grade))
                     {
                         s.active = true;
@@ -82,9 +83,9 @@ namespace MoodleLogAnalyse
         {
             excludedStudents.Clear();
 
-            foreach(Student s in studentList)
+            foreach (Student s in studentList)
             {
-                if(!s.active)
+                if (!s.active)
                 {
                     excludedStudents.Add(s.id);
                 }
@@ -131,20 +132,20 @@ namespace MoodleLogAnalyse
             uint moodleId;  // Moodle unique id for the module
             uint typeId;  // Moodle unique id for a module type
 
-            
+
 
             moduleList.Clear();
 
             foreach (DataRow logRow in moodleData.Tables[0].Rows)
             {
-                
+
 
                 moodleId = uint.Parse(logRow["instanceid"].ToString());
                 typeId = uint.Parse(logRow["module"].ToString());
 
-                    // If current module does not exist in the module list create it
-                    if (!moduleList.ContainsKey(moodleId))
-                    {
+                // If current module does not exist in the module list create it
+                if (!moduleList.ContainsKey(moodleId))
+                {
                     moduleList.Add(moodleId,
                         new Module(moodleId,
                             uint.Parse(logRow["module"].ToString()),
@@ -158,7 +159,7 @@ namespace MoodleLogAnalyse
                     // Type did not exist add it to the list.
                     {
                         moduleTypeList.Add(typeId, new ModuleType(typeId, logRow["type"].ToString()));
-                        
+
                     }
 #if DETAILED           
                     Console.WriteLine(moduleList[moodleId].ToString());  
@@ -166,7 +167,7 @@ namespace MoodleLogAnalyse
                 }
                 // if the current log entry is for a ignored student don't increment the access counts.
                 if (excludedStudents.Contains(uint.Parse(logRow["userid"].ToString()))) continue; // If an excluded user skip this access
-                
+
                 // only increment the counts if there is an allowed action e.g. add, complete
                 if (moduleTypeList[typeId].trackAction(logRow["action"].ToString()))
                 {
@@ -185,16 +186,59 @@ namespace MoodleLogAnalyse
         /// <returns>The total accesses of the module with the highest module count or null if there are no modules</returns>
         public static uint? findMaxModuleAccessCount()
         {
-            return  moduleList.Max(module => module.Value.totalAccesses);
+            return moduleList.Max(module => module.Value.totalAccesses);
         } // End findMaxModuleAccessCount
         #endregion
 
         #region data access methods
+
+        public static void storeStudentData(string filename)
+        {
+            DataTable studentInfo = new DataTable("StudentInfo");
+            DataSet studentData = new DataSet();
+            // Set up columns
+            Student s = new Student();
+
+            studentInfo.Columns.Add("id", s.id.GetType());
+            studentInfo.Columns.Add("firstname", s.firstname.GetType());
+            studentInfo.Columns.Add("lastname", s.lastname.GetType());
+            studentInfo.Columns.Add("username", s.username.GetType());
+            studentInfo.Columns.Add("active", s.active.GetType());
+            studentInfo.Columns.Add("grade", s.grade.GetType());
+
+            foreach (Student stu in studentList)
+            {
+                studentInfo.Rows.Add(stu.id, stu.firstname, stu.lastname, stu.username, stu.active, stu.grade);
+            }
+
+            studentData.Tables.Add(studentInfo);
+
+            fileAccess.WriteOdsFile(studentData, filename);
+        }
+
+        public static void getStudentData(string filename)
+        {
+            DataSet studentData = fileAccess.ReadOdsFile(filename);
+            uint stuId = 0;
+            int stuIndex = -1;
+            foreach (DataRow stu in studentData.Tables[0].Rows)
+            {
+                stuId = uint.Parse(stu["id"].ToString());
+                stuIndex = studentList.FindIndex(sId => sId.id == stuId);
+                if (stuIndex >= 0)
+                {
+                    studentList[stuIndex].grade = stu["grade"].ToString();
+                }
+                
+            }
+
+        }
+
         public static void getData(string filename)
         {
-           
 
-            moodleData = fileReader.ReadOdsFile(filename);  // Read the ODS File with the data
+
+            moodleData = fileAccess.ReadOdsFile(filename);  // Read the ODS File with the data
 
             // Transfer first row of the table to the column names and then remove that row
 
@@ -206,7 +250,7 @@ namespace MoodleLogAnalyse
             }
 
             moodleData.Tables[0].Rows[0].Delete();
-           
+
             // Filter out the none student accesses
             int rowCounter = 0;
             List<int> deleteRows = new List<int>();

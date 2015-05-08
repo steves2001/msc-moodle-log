@@ -62,6 +62,14 @@ namespace MoodleLogAnalyse
 
         private void SaveCommand_Executed(object sender, RoutedEventArgs e)
         {
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.FileName = "Log"; // Default file name
+            dlg.DefaultExt = ".ods"; // Default file extension
+            dlg.Filter = "Open Document Spreadsheets (.ods)|*.ods"; // Filter files by extension 
+            if (dlg.ShowDialog() == true)
+            {
+                Analyse.storeStudentData(dlg.FileName);
+            }
         }
 
         private void SelectAllCommand_Executed(object sender, RoutedEventArgs e)
