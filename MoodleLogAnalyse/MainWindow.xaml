@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
         DataContext="{Binding Mode=OneWay, RelativeSource={RelativeSource Self}}"
         Title="MainWindow" Height="411.6" Width="609.8" WindowStartupLocation="CenterScreen">
-    
+
     <Window.CommandBindings>
         <CommandBinding Command="New" Executed="NewCommand_Executed" CanExecute="CommonCommandBinding_CanExecute" />
         <CommandBinding Command="Open" Executed="OpenCommand_Executed" CanExecute="CommonCommandBinding_CanExecute" />
@@ -12,14 +12,19 @@
     </Window.CommandBindings>
     <Window.Resources>
         <CollectionViewSource x:Key="ItemCollectionViewSource" CollectionViewType="ListCollectionView"/>
+        <Style TargetType="{x:Type DataGridCell}">
+            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="DataGridCell_PreviewMouseLeftButtonDown" />
+            <EventSetter Event="PreviewTextInput" Handler="DataGridCell_PreviewTextInput" />
+        </Style>
     </Window.Resources>
     <Grid>
         <DockPanel LastChildFill="True">
             <ToolBarTray VerticalAlignment="Top" DockPanel.Dock="Top">
                 <ToolBar BandIndex="0">
                     <Button Command="New" Content="New" />
-                    <Button Command="Open" Content="Open" />
-                    <Button Command="Save" Content="Save" />
+                    <Button Click="ImportLogCommand_Executed" Content="Import Log" />
+                    <Button Command="Open" Content="Open Student Grades" />
+                    <Button Command="Save" Content="Save Student Grades" />
                 </ToolBar>
                 <ToolBar x:Name="Charts" BandIndex="2">
                     <Button Name="Chart" Content="Chart" Click="ChartCommand_Executed"/>
@@ -37,7 +42,7 @@
                     <ColumnDefinition Width="*" />
                     
                 </Grid.ColumnDefinitions>
-                   <DataGrid x:Name="studentDataGrid"  DataContext="{StaticResource ItemCollectionViewSource}"  ItemsSource="{Binding}"  AutoGenerateColumns="False" Grid.Column="0" CanUserAddRows="False">
+                <DataGrid  x:Name="studentDataGrid"  DataContext="{StaticResource ItemCollectionViewSource}"  ItemsSource="{Binding}"  AutoGenerateColumns="False" Grid.Column="0" CanUserAddRows="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Path=id}" ClipboardContentBinding="{x:Null}" Header="Id" Width="60" MinWidth="60"/>
                         <DataGridTextColumn Binding="{Binding Path=firstname}" ClipboardContentBinding="{x:Null}" Header="First Name" Width="*" MinWidth="200"/>
@@ -45,6 +50,7 @@
                         <DataGridTextColumn Binding="{Binding Path=username}" ClipboardContentBinding="{x:Null}" Header="User Name" Visibility="Hidden"/>
                         <DataGridCheckBoxColumn Binding="{Binding Path=active}" ClipboardContentBinding="{x:Null}" Header="Selected" Width="60"/>
                         <DataGridComboBoxColumn ClipboardContentBinding="{x:Null}" SelectedValueBinding="{Binding Path=grade}"  SelectedValuePath="Content" SelectedItemBinding="{x:Null}" TextBinding="{x:Null}" Header="Grade" Width="50" MinWidth="50">
+
                             <DataGridComboBoxColumn.ItemsSource>
                                 <CompositeCollection>
                                     <ComboBoxItem Content="X" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>

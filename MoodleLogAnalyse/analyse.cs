@@ -192,6 +192,19 @@ namespace MoodleLogAnalyse
 
         #region data access methods
 
+        public static void clearData()
+        {
+            try
+            {
+                moodleData.Clear();
+                excludedStudents.Clear();
+                studentList.Clear();
+                moduleList.Clear();
+                moduleTypeList.Clear();
+            }
+            catch { }
+        }
+
         public static void storeStudentData(string filename)
         {
             DataTable studentInfo = new DataTable("StudentInfo");
@@ -223,11 +236,11 @@ namespace MoodleLogAnalyse
             int stuIndex = -1;
             foreach (DataRow stu in studentData.Tables[0].Rows)
             {
-                stuId = uint.Parse(stu["id"].ToString());
+                stuId = uint.Parse(stu[0].ToString());
                 stuIndex = studentList.FindIndex(sId => sId.id == stuId);
                 if (stuIndex >= 0)
                 {
-                    studentList[stuIndex].grade = stu["grade"].ToString();
+                    studentList[stuIndex].grade = stu[5].ToString();
                 }
                 
             }
