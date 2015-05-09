@@ -2,7 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
         DataContext="{Binding Mode=OneWay, RelativeSource={RelativeSource Self}}"
-        Title="MainWindow" Height="411.6" Width="609.8" WindowStartupLocation="CenterScreen">
+        xmlns:local="clr-namespace:MoodleLogAnalyse"
+        Title="MainWindow" Height="556.88" Width="793" WindowStartupLocation="CenterScreen">
 
     <Window.CommandBindings>
         <CommandBinding Command="New" Executed="NewCommand_Executed" CanExecute="CommonCommandBinding_CanExecute" />
@@ -21,15 +22,15 @@
         <DockPanel LastChildFill="True">
             <ToolBarTray VerticalAlignment="Top" DockPanel.Dock="Top">
                 <ToolBar BandIndex="0">
-                    <Button Command="New" Content="New" />
+                    <Button x:Name="button" Command="New" Content="New" IsEnabled="{Binding Path=(local:Analyse.DataPresent), Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <Button Click="ImportLogCommand_Executed" Content="Import Log" />
-                    <Button Command="Open" Content="Open Student Grades" />
-                    <Button Command="Save" Content="Save Student Grades" />
+                    <Button Name="OpenButton" Command="Open"   Content="Open Grades" IsEnabled="{Binding IsEnabled, ElementName=button}"/>
+                    <Button Command="Save" Content="Save Grades" IsEnabled="{Binding IsEnabled, ElementName=button}" />
                 </ToolBar>
-                <ToolBar x:Name="Charts" BandIndex="2">
+                <ToolBar x:Name="Charts" BandIndex="2" IsEnabled="{Binding IsEnabled, ElementName=button}" >
                     <Button Name="Chart" Content="Chart" Click="ChartCommand_Executed"/>
                 </ToolBar>
-                <ToolBar x:Name="Selections" BandIndex="1">
+                <ToolBar x:Name="Selections" BandIndex="1" IsEnabled="{Binding IsEnabled, ElementName=button}">
                     <Button Name="SelectAll" Content="Select All" Click="SelectAllCommand_Executed"/>
                     <Button Name="SelectNone" Content="Clear All" Click="SelectNoneCommand_Executed"/>
                     <Button Name="SelectInvert" Content="Invert All" Click="SelectInvertCommand_Executed"/>
@@ -40,7 +41,7 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
-                    
+
                 </Grid.ColumnDefinitions>
                 <DataGrid  x:Name="studentDataGrid"  DataContext="{StaticResource ItemCollectionViewSource}"  ItemsSource="{Binding}"  AutoGenerateColumns="False" Grid.Column="0" CanUserAddRows="False">
                     <DataGrid.Columns>
@@ -63,7 +64,7 @@
                         </DataGridComboBoxColumn>
                     </DataGrid.Columns>
                 </DataGrid>
-                
+
             </Grid>
 
         </DockPanel>

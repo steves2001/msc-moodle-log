@@ -9,13 +9,15 @@ using OdsReadWrite;
 using System.Data;
 using System.Text.RegularExpressions;
 using System.Reflection;
+using System.ComponentModel;
 
 namespace MoodleLogAnalyse
 {
-    class Analyse
+    static class Analyse 
     {
         #region private attributes
         private static OdsReaderWriter fileAccess = new OdsReaderWriter();  // Generic public domain ODS reader class
+        private static bool dataPresent = false;  // Status variable set to indicate there is data to work with.
         #endregion
 
         #region public attributes
@@ -26,6 +28,29 @@ namespace MoodleLogAnalyse
         public static SortedList<uint, Module> moduleList = new SortedList<uint, Module>();  // A list of all the modules in the log.
         public static SortedList<uint, ModuleType> moduleTypeList = new SortedList<uint, ModuleType>();  // A list of all the modules types in the log.
         public static int selectedStudentCount { get { return activeStudentCount(); } }
+
+        #endregion
+
+        #region properties
+        public static Boolean DataPresent  // Data 
+        {
+            get { return dataPresent; }
+            set
+            {
+                if (dataPresent != value)
+                {
+                    dataPresent = value;
+                    NotifyStaticPropertyChanged("DataPresent");
+                }
+            }           
+        }
+
+        public static event EventHandler<PropertyChangedEventArgs> StaticPropertyChanged = delegate { };
+
+        private static void NotifyStaticPropertyChanged(string propertyName)
+        {
+            StaticPropertyChanged(null, new PropertyChangedEventArgs(propertyName));
+        }
         #endregion
 
         #region data extraction methods
@@ -201,6 +226,7 @@ namespace MoodleLogAnalyse
                 studentList.Clear();
                 moduleList.Clear();
                 moduleTypeList.Clear();
+                DataPresent = false;
             }
             catch { }
         }
@@ -242,7 +268,7 @@ namespace MoodleLogAnalyse
                 {
                     studentList[stuIndex].grade = stu[5].ToString();
                 }
-                
+
             }
 
         }
@@ -281,8 +307,8 @@ namespace MoodleLogAnalyse
 
             foreach (int row in deleteRows.OrderByDescending(item => item).ToList())
                 moodleData.Tables[0].Rows[row].Delete();
+            if (moodleData.Tables[0].Rows.Count > 0) DataPresent = true; else DataPresent = false;
 
-            //extractData();
         }
         #endregion
     }

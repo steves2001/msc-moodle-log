@@ -23,12 +23,14 @@ namespace MoodleLogAnalyse
     public partial class MainWindow : Window
     {
         CollectionViewSource itemCollectionViewSource;
+        
         public static String gradeFilter = "P,M,D";
         public static String GradeFilters
         {
             get { return gradeFilter; }
             set { gradeFilter = value; }
         }
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -156,6 +158,8 @@ namespace MoodleLogAnalyse
 
                 itemCollectionViewSource = (CollectionViewSource)(FindResource("ItemCollectionViewSource"));
                 itemCollectionViewSource.Source = Analyse.studentList;
+                //BindingExpression binding = OpenButton.GetBindingExpression(TextBox.TextProperty);
+                //binding.UpdateSource();
             }
         }
 
