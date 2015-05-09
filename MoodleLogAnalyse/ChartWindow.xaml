@@ -11,21 +11,46 @@
         <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Visible" Margin="0,0,-0.4,0.4">
             <Canvas x:Name="ChartCanvas" Height="800" Width="895" Background="Beige"/>
         </ScrollViewer>
-        <Button Grid.Column="0" Content="Display Chart" Margin="5,10,5,0" VerticalAlignment="Top" Click="Button_Click"/>
-        <ListBox x:Name="ModuleSelector" HorizontalContentAlignment="Stretch" Height="295" Margin="5,34,5,0" VerticalAlignment="Top" SelectionMode="Multiple">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid Margin="0,2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="20" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{Binding id}" />
-                        <TextBlock Grid.Column="1" Text="{Binding name}" />
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <StackPanel Grid.Column="0">
+            <Button Content="Display Chart" Margin="5,10,5,0" VerticalAlignment="Top" Click="Button_Click"/>
+            <ListBox x:Name="ModuleSelector" HorizontalContentAlignment="Stretch" MaxHeight="295" Margin="5,10,5,0" VerticalAlignment="Top" SelectionMode="Multiple">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBlock Grid.Column="1" Text="{Binding totalAccesses}" />
+                            <TextBlock Grid.Column="0" Text="{Binding name}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <ListBox ItemsSource="{Binding chartKeys}" x:Name="chartKey" HorizontalContentAlignment="Stretch" MaxHeight="100" Margin="5,10,5,0" VerticalAlignment="Top" SelectionMode="Single">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
+                            <Rectangle Grid.Column="0" Height="{Binding height}" Stroke="Black" Width="{Binding width}" >
+                                <Rectangle.Fill>
+                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <GradientStop Color="{Binding brushStart}" Offset="0"/>
+                                        <GradientStop Color="{Binding brushEnd}" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <TextBlock Grid.Column="1" Text="{Binding Title}"  Margin="5,2,5,2" HorizontalAlignment="Left" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+
+            </ListBox>
+        </StackPanel>
     </Grid>
 </Window>

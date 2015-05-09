@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -24,6 +25,18 @@ namespace MoodleLogAnalyse
         Rectangle minimumLimit = new Rectangle();
         Rectangle aboveLimit = new Rectangle();
 
+        // Colours for bar showing total accesses
+        string accBarBtm = "#FFE1A900"; //ARGB
+        string accBarTop = "#FFFFFF99";
+
+        // Colours for bar showing total unique student accesses
+        string stuBarBtm = "#FF47A15F"; //ARGB
+        string stuBarTop = "#FF63E686";
+
+        // Line colour for the bars
+        string lineColour = "#FF000000";
+        public ObservableCollection<chartKeyItem> chartKeys = new ObservableCollection<chartKeyItem>();
+
         double barLimit = 400;
 
         public ChartWindow()
@@ -33,6 +46,9 @@ namespace MoodleLogAnalyse
             ModuleSelector.SelectAll(); // Start with everything selected
             drawBarChart();
 
+            chartKeys.Add(new chartKeyItem("Unique Students", stuBarTop, stuBarBtm,lineColour));
+            chartKeys.Add(new chartKeyItem("Total Accesses", accBarTop, accBarBtm, lineColour));
+            chartKey.ItemsSource = chartKeys;
         }
 
         private TextBlock createLabel (double left, double top, double width, double height, int z, String text, TextAlignment align , VerticalAlignment valign )
@@ -102,16 +118,7 @@ namespace MoodleLogAnalyse
             string modDetails = "";  // Module description for use in the label
             string modType = "";     // Module type  for use in the label
 
-            // Colours for bar showing total accesses
-            string accBarBtm = "#FFE1A900"; //ARGB
-            string accBarTop = "#FFFFFF99";
 
-            // Colours for bar showing total unique student accesses
-            string stuBarBtm = "#FF47A15F"; //ARGB
-            string stuBarTop = "#FF63E686";
-
-            // Line colour for the bars
-            string lineColour = "#FF000000";
 
             // Find the module with the highest access count
             foreach (Module m in Analyse.moduleList.Values)
@@ -125,7 +132,7 @@ namespace MoodleLogAnalyse
 
             // Label headings
 
-            ChartCanvas.Children.Add(createLabel(barXStart - 210,10,200,20, 0, "UNIQUE ACCESSES", TextAlignment.Right, VerticalAlignment.Center ));
+            ChartCanvas.Children.Add(createLabel(barXStart - 210,10,200,20, 0, "STUDENT COUNT", TextAlignment.Right, VerticalAlignment.Center ));
             ChartCanvas.Children.Add(createLabel( 10, 10, 30, 20, 0, "TYPE", TextAlignment.Right,VerticalAlignment.Center));
             ChartCanvas.Children.Add(createLabel(50, 10, 200, 20, 0, "DESCRIPTION", TextAlignment.Left,VerticalAlignment.Center));
             
@@ -163,7 +170,7 @@ namespace MoodleLogAnalyse
                 //Draw the above expected accesses
                 ChartCanvas.Children.Add(createRectangle(barXStart + barLimit * accessPercentage, 30, barLimit * (1.0 - accessPercentage), yPos - 6, -1, "#FF000000", "#5500CC00"));
 
-                ChartCanvas.Children.Add(createLabel(barXStart - 8, 10, 16, 20, 0, "0", TextAlignment.Center, VerticalAlignment.Center));
+                //ChartCanvas.Children.Add(createLabel(barXStart - 8, 10, 16, 20, 0, "0", TextAlignment.Center, VerticalAlignment.Center));
                 ChartCanvas.Children.Add(createLabel(barXStart + barLimit * accessPercentage - 25, 10, 50, 20, 0, Analyse.selectedStudentCount.ToString(), TextAlignment.Center, VerticalAlignment.Center));
                 ChartCanvas.Children.Add(createLabel(barXStart + barLimit - 50, 10, 50, 20, 0, maxModule.ToString(), TextAlignment.Right, VerticalAlignment.Center));
 
@@ -178,5 +185,26 @@ namespace MoodleLogAnalyse
             drawBarChart();
 
         }
+    }
+
+    public class chartKeyItem
+    {
+        public double width;
+        public double height;
+        public string Title { get; set; }
+        public string brushStart { get; set; }
+        public string brushEnd { get; set; }
+        public string outline { get; set; }
+
+        public chartKeyItem(string keyTitle, string startFillColour, string endFillColour, string lineColour)
+        {
+            brushStart = startFillColour;
+            brushEnd = endFillColour;
+            outline = lineColour;
+            width = 10;
+            height = 10;
+            Title = keyTitle;
+        }
+
     }
 }
