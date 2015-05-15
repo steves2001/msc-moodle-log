@@ -155,11 +155,10 @@ namespace MoodleLogAnalyse
                 commitEdits();
                 Analyse.getData(dlg.FileName);
                 Analyse.findStudents();
-
+                // This binds the student list to the data grid on the form
                 itemCollectionViewSource = (CollectionViewSource)(FindResource("ItemCollectionViewSource"));
                 itemCollectionViewSource.Source = Analyse.studentList;
-                //BindingExpression binding = OpenButton.GetBindingExpression(TextBox.TextProperty);
-                //binding.UpdateSource();
+                itemCollectionViewSource.View.Refresh();
             }
         }
 
@@ -169,6 +168,7 @@ namespace MoodleLogAnalyse
             dlg.FileName = "Log"; // Default file name
             dlg.DefaultExt = ".ods"; // Default file extension
             dlg.Filter = "Open Document Spreadsheets (.ods)|*.ods"; // Filter files by extension 
+            
             if (dlg.ShowDialog() == true)
             {
                 commitEdits();
