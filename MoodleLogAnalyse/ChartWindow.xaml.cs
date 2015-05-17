@@ -135,9 +135,14 @@ namespace MoodleLogAnalyse
             ChartCanvas.Children.Add(createLabel(barXStart - 210,10,200,20, 0, "STUDENT COUNT", TextAlignment.Right, VerticalAlignment.Center ));
             ChartCanvas.Children.Add(createLabel( 10, 10, 30, 20, 0, "TYPE", TextAlignment.Right,VerticalAlignment.Center));
             ChartCanvas.Children.Add(createLabel(50, 10, 200, 20, 0, "DESCRIPTION", TextAlignment.Left,VerticalAlignment.Center));
+
             
-            foreach (Module m in Analyse.moduleList.Values)
+            //foreach (Module m in Analyse.moduleList.Values)
+
+            foreach (uint k in Analyse.sortedModuleKeys)
             {
+                Module m = Analyse.moduleList[k];
+
                 if (notSelectedListItem(m.type)) continue;
                 
                 yPos += barSpacing;  

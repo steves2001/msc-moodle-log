@@ -51,6 +51,8 @@ namespace MoodleLogAnalyse
         #endregion
 
         #region operator overloading
+
+
         public static Module operator ++(Module m)
         {
             m.totalAccesses++; // Increment the access count.

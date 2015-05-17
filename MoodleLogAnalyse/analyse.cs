@@ -34,7 +34,7 @@ namespace MoodleLogAnalyse
 
         public static SortedList<uint, Module> moduleList = new SortedList<uint, Module>();  // A list of all the modules in the log.
         public static SortedList<uint, ModuleType> moduleTypeList = new SortedList<uint, ModuleType>();  // A list of all the modules types in the log.
-        
+        public static List<uint> sortedModuleKeys = new List<uint>(); // A list containing the current sort order for moudule output
         public static int selectedStudentCount { get { return activeStudentCount(); } }  // Returns the number of students who are flagged as active
 
         #endregion
@@ -73,6 +73,7 @@ namespace MoodleLogAnalyse
         {
             findStudents();
             findModules();
+            findMaxModuleAccessCount();
         }
 
         /// <summary>
@@ -244,6 +245,7 @@ namespace MoodleLogAnalyse
 #if DETAILED
             Console.WriteLine("Highest Access Count = " + findMaxModuleAccessCount());
 #endif
+            sortModulesByAccessCount();
         }  // End findModules
 
         /// <summary>
@@ -258,6 +260,33 @@ namespace MoodleLogAnalyse
         #endregion
 
         #region data access methods
+        /// <summary>
+        /// Sorts the module list by total access count
+        /// </summary>
+        public static void sortModulesByAccessCount()
+        {
+            List<Module> m = moduleList.Values.ToList<Module>();  // Get the modules to sort
+
+            m.Sort(delegate(Module x, Module y)
+            {
+                return x.totalAccesses.CompareTo(y.totalAccesses); // Simple because i used uint (no need to check for nulls)
+            });
+
+            sortedModuleKeys.Clear();  // Clear the existing list elements
+
+            foreach(Module module in m)
+                sortedModuleKeys.Add(module.id);  // Copy the new order to the key list.
+        }
+
+        /*          Temp note how to sort a list using anon delegate
+                    m.Sort(delegate(Module x, Module y)
+                    {
+                        if (x.totalAccesses == null && y.totalAccesses == null) return 0;
+                        else if (x.totalAccesses == null) return -1;
+                        else if (y.totalAccesses == null) return 1;
+                        else return x.totalAccesses.CompareTo(y.totalAccesses);
+                    });
+         */
 
         /// <summary>
         /// Clears all the data from the class ready for repopulation
