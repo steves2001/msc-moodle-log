@@ -35,7 +35,10 @@ namespace MoodleLogAnalyse
         public static SortedList<uint, Module> moduleList = new SortedList<uint, Module>();  // A list of all the modules in the log.
         public static SortedList<uint, ModuleType> moduleTypeList = new SortedList<uint, ModuleType>();  // A list of all the modules types in the log.
         public static List<uint> sortedModuleKeys = new List<uint>(); // A list containing the current sort order for moudule output
+        
         public static int selectedStudentCount { get { return activeStudentCount(); } }  // Returns the number of students who are flagged as active
+
+        public static string courseName = "";
 
         #endregion
 
@@ -437,7 +440,8 @@ namespace MoodleLogAnalyse
                 }
 
                 moodleData.Tables[0].Rows[0].Delete();
-
+                if (moodleData.Tables[0].Rows.Count == 0) { DataPresent = false; return; } // If there is no data in the table
+                courseName = moodleData.Tables[0].Rows[0]["fullname"].ToString();
                 // Filter out the none student accesses
                 int rowCounter = 0;
                 List<int> deleteRows = new List<int>();
