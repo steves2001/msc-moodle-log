@@ -9,7 +9,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Visible" Margin="0,0,-0.4,0.4">
-            <Canvas x:Name="ChartCanvas" Height="800" Width="895" Background="Beige"/>
+            <Canvas x:Name="ChartCanvas" Height="800" Width="895" Background="Beige" VerticalAlignment="Top" HorizontalAlignment="Left"/>
         </ScrollViewer>
         <StackPanel Grid.Column="0">
             <Button Content="Display Chart" Margin="5,10,5,0" VerticalAlignment="Top" Click="Button_Click"/>

@@ -128,6 +128,9 @@ namespace MoodleLogAnalyse
                 if (m.totalAccesses > maxModule) maxModule = m.totalAccesses;
             }
 
+            //Fix for max module accesses being less than the total students
+            if (Analyse.selectedStudentCount >= maxModule) maxModule = (uint)Analyse.selectedStudentCount;
+
             ChartCanvas.Children.Clear();
 
             // Label headings
@@ -167,16 +170,28 @@ namespace MoodleLogAnalyse
 
             ChartCanvas.Height = (barCount + 1) * 30;
 
+
+            // there is a problem when both the  maxModule and the unique accesses are both less than the selected student count
             if (barCount > 0)
             {
-                double accessPercentage = (double)Analyse.selectedStudentCount / (double)maxModule;
+                double accessPercentage;
+
+                if((double)Analyse.selectedStudentCount <= (double)maxModule)
+                    accessPercentage = (double)Analyse.selectedStudentCount / (double)maxModule;
+                else
+                    accessPercentage = 1.0;
+
                 //Draw the minimum expected accesses
                 ChartCanvas.Children.Add(createRectangle(barXStart, 30, barLimit * accessPercentage, yPos - 6, -1, "#FF000000", "#55CC0000"));
+                
                 //Draw the above expected accesses
-                ChartCanvas.Children.Add(createRectangle(barXStart + barLimit * accessPercentage, 30, barLimit * (1.0 - accessPercentage), yPos - 6, -1, "#FF000000", "#5500CC00"));
+                if(accessPercentage < 1.0)
+                ChartCanvas.Children.Add(createRectangle(barXStart + barLimit * accessPercentage, 30, barLimit * Math.Abs(1.0 - accessPercentage), yPos - 6, -1, "#FF000000", "#5500CC00"));
 
                 //ChartCanvas.Children.Add(createLabel(barXStart - 8, 10, 16, 20, 0, "0", TextAlignment.Center, VerticalAlignment.Center));
+                if (accessPercentage < 1.0)
                 ChartCanvas.Children.Add(createLabel(barXStart + barLimit * accessPercentage - 25, 10, 50, 20, 0, Analyse.selectedStudentCount.ToString(), TextAlignment.Center, VerticalAlignment.Center));
+                // This needs CORRECTING TO MOVE BASED ON THE LOCATION OF THE YELLOW BAR
                 ChartCanvas.Children.Add(createLabel(barXStart + barLimit - 50, 10, 50, 20, 0, maxModule.ToString(), TextAlignment.Right, VerticalAlignment.Center));
 
             }

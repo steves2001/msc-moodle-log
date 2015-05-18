@@ -245,7 +245,7 @@ namespace MoodleLogAnalyse
 #if DETAILED
             Console.WriteLine("Highest Access Count = " + findMaxModuleAccessCount());
 #endif
-            sortModulesByAccessCount();
+            sortModulesByUniqueAccessCount("descending");
         }  // End findModules
 
         /// <summary>
@@ -263,7 +263,7 @@ namespace MoodleLogAnalyse
         /// <summary>
         /// Sorts the module list by total access count
         /// </summary>
-        public static void sortModulesByAccessCount()
+        public static void sortModulesByAccessCount(string direction = "ascending")
         {
             List<Module> m = moduleList.Values.ToList<Module>();  // Get the modules to sort
 
@@ -272,11 +272,34 @@ namespace MoodleLogAnalyse
                 return x.totalAccesses.CompareTo(y.totalAccesses); // Simple because i used uint (no need to check for nulls)
             });
 
+            if (direction == "descending") m.Reverse();
+
             sortedModuleKeys.Clear();  // Clear the existing list elements
 
             foreach(Module module in m)
                 sortedModuleKeys.Add(module.id);  // Copy the new order to the key list.
         }
+
+        /// <summary>
+        /// Sorts the module list by total unique access count
+        /// </summary>
+        public static void sortModulesByUniqueAccessCount(string direction = "ascending")
+        {
+            List<Module> m = moduleList.Values.ToList<Module>();  // Get the modules to sort
+
+            m.Sort(delegate(Module x, Module y)
+            {
+                return x.uniqueAccesses.CompareTo(y.uniqueAccesses); // Simple because i used uint (no need to check for nulls)
+            });
+
+            if (direction == "descending") m.Reverse();
+
+            sortedModuleKeys.Clear();  // Clear the existing list elements
+
+            foreach (Module module in m)
+                sortedModuleKeys.Add(module.id);  // Copy the new order to the key list.
+        }
+
 
         /*          Temp note how to sort a list using anon delegate
                     m.Sort(delegate(Module x, Module y)
