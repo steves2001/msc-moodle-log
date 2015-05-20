@@ -63,6 +63,7 @@
     </Compile>
     <Compile Include="Module.cs" />
     <Compile Include="ModuleType.cs" />
+    <Compile Include="Section.cs" />
     <Compile Include="Student.cs" />
     <Page Include="ChartWindow.xaml">
       <SubType>Designer</SubType>

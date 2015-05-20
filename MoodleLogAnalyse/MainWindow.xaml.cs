@@ -221,6 +221,7 @@ namespace MoodleLogAnalyse
             {
                 Analyse.findExcludedStudents();
                 Analyse.findModules();
+                Analyse.findSections();
                 ChartWindow c = new ChartWindow();
                 c.ShowDialog();
             }

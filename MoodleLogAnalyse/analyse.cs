@@ -32,8 +32,10 @@ namespace MoodleLogAnalyse
         public static List<uint> excludedStudents = new List<uint>();  // Students to be excluded from operations
         public static List<Student> studentList = new List<Student>();  // A list of all the students in the log.
 
+        public static SortedList<uint,Section> sectionList = new SortedList<uint,Section>(); // List of sections sorted by section number
         public static SortedList<uint, Module> moduleList = new SortedList<uint, Module>();  // A list of all the modules in the log.
         public static SortedList<uint, ModuleType> moduleTypeList = new SortedList<uint, ModuleType>();  // A list of all the modules types in the log.
+        
         public static List<uint> sortedModuleKeys = new List<uint>(); // A list containing the current sort order for moudule output
         
         public static int selectedStudentCount { get { return activeStudentCount(); } }  // Returns the number of students who are flagged as active
@@ -192,6 +194,37 @@ namespace MoodleLogAnalyse
         }  // End findStudents
 
         /// <summary>
+        /// Loop through the data extracting sections into the sorted sectionList data structure
+        /// </summary>
+        public static void findSections()
+        {
+            if (!DataPresent) return;  // Safety check
+
+            uint sectionId; // Section number
+
+
+            sectionList.Clear();
+
+            foreach (DataRow logRow in moodleData.Tables[0].Rows)
+            {
+
+                sectionId = uint.Parse(logRow["section"].ToString());
+
+                // If current section does not exist in the section list create it
+                if (!sectionList.ContainsKey(sectionId))
+                {
+                    sectionList.Add(sectionId,
+                        new Section(sectionId,
+                            logRow["name"].ToString(),
+                            logRow["sequence"].ToString()
+                            )
+                    );
+                }
+            }
+        }  // End findSections
+        
+
+        /// <summary>
         /// Loop through the data extracting unique modules into the sorted moduleList data structure
         /// </summary>
         public static void findModules()
@@ -201,8 +234,6 @@ namespace MoodleLogAnalyse
             uint moodleId;  // Moodle unique id for the module
             uint typeId;  // Moodle unique id for a module type
 
-
-
             moduleList.Clear();
 
             foreach (DataRow logRow in moodleData.Tables[0].Rows)
@@ -211,7 +242,7 @@ namespace MoodleLogAnalyse
 
                 moodleId = uint.Parse(logRow["instanceid"].ToString());
                 typeId = uint.Parse(logRow["module"].ToString());
-
+                
                 // If current module does not exist in the module list create it
                 if (!moduleList.ContainsKey(moodleId))
                 {
