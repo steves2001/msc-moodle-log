@@ -233,6 +233,7 @@ namespace MoodleLogAnalyse
 
             uint moodleId;  // Moodle unique id for the module
             uint typeId;  // Moodle unique id for a module type
+            string description;
 
             moduleList.Clear();
 
@@ -246,10 +247,15 @@ namespace MoodleLogAnalyse
                 // If current module does not exist in the module list create it
                 if (!moduleList.ContainsKey(moodleId))
                 {
+                    if (logRow["description"].ToString().Length > 50)
+                        description = logRow["description"].ToString().Substring(0, 50);
+                    else
+                        description = logRow["description"].ToString();
+
                     moduleList.Add(moodleId,
                         new Module(moodleId,
                             uint.Parse(logRow["module"].ToString()),
-                            logRow["description"].ToString()
+                            String.Format("Section {0:00} : ", int.Parse(logRow["section"].ToString())) + description
                             )
                     );
 
@@ -279,7 +285,7 @@ namespace MoodleLogAnalyse
 #if DETAILED
             Console.WriteLine("Highest Access Count = " + findMaxModuleAccessCount());
 #endif
-            sortModulesByUniqueAccessCount("descending");
+            
         }  // End findModules
 
         /// <summary>
@@ -294,6 +300,27 @@ namespace MoodleLogAnalyse
         #endregion
 
         #region data access methods
+        /// <summary>
+        /// Sorts the module list by moodle course sequence count
+        /// </summary>
+        public static void sortModulesByMoodleSequence(string direction = "ascending")
+        {
+            List<uint> sm = new List<uint>(); // list of modules by section
+
+            // iterate list of sections copying modules to the section module list
+            foreach(KeyValuePair<uint,Section> s in sectionList)
+            {
+                sm.AddRange(s.Value.modules);
+            }
+
+            if (direction == "descending") sm.Reverse();
+
+            sortedModuleKeys.Clear();  // Clear the existing list elements
+
+            foreach (uint module in sm)
+                if(moduleList.Keys.Contains(module)) sortedModuleKeys.Add(module);  // Copy the new order to the key list.
+        }        
+
         /// <summary>
         /// Sorts the module list by total access count
         /// </summary>
