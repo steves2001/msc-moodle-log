@@ -1,23 +1,72 @@
 ﻿<Window x:Name="TheMainWindow" x:Class="MoodleLogAnalyse.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+        DataContext="{Binding Mode=OneWay, RelativeSource={RelativeSource Self}}"
+        xmlns:local="clr-namespace:MoodleLogAnalyse"
+        Title="MainWindow" Height="556.88" Width="793" WindowStartupLocation="CenterScreen">
+
     <Window.CommandBindings>
         <CommandBinding Command="New" Executed="NewCommand_Executed" CanExecute="CommonCommandBinding_CanExecute" />
         <CommandBinding Command="Open" Executed="OpenCommand_Executed" CanExecute="CommonCommandBinding_CanExecute" />
         <CommandBinding Command="Save" Executed="SaveCommand_Executed" CanExecute="CommonCommandBinding_CanExecute" />
+
     </Window.CommandBindings>
-    
+    <Window.Resources>
+        <CollectionViewSource x:Key="ItemCollectionViewSource" CollectionViewType="ListCollectionView"/>
+        <Style TargetType="{x:Type DataGridCell}">
+            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="DataGridCell_PreviewMouseLeftButtonDown" />
+            <EventSetter Event="PreviewTextInput" Handler="DataGridCell_PreviewTextInput" />
+        </Style>
+    </Window.Resources>
     <Grid>
         <DockPanel LastChildFill="True">
             <ToolBarTray VerticalAlignment="Top" DockPanel.Dock="Top">
-            <ToolBar>
-                <Button Command="New" Content="New" />
-                <Button Command="Open" Content="Open" />
-                <Button Command="Save" Content="Save" />
-            </ToolBar>
+                <ToolBar BandIndex="0">
+                    <Button x:Name="button" Command="New" Content="New" IsEnabled="{Binding Path=(local:Analyse.DataPresent), Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Button Click="ImportLogCommand_Executed" Content="Import Log" />
+                    <Button Name="OpenButton" Command="Open"   Content="Open Grades" IsEnabled="{Binding IsEnabled, ElementName=button}"/>
+                    <Button Command="Save" Content="Save Grades" IsEnabled="{Binding IsEnabled, ElementName=button}" />
+                </ToolBar>
+                <ToolBar x:Name="Charts" BandIndex="2" IsEnabled="{Binding IsEnabled, ElementName=button}" >
+                    <Button Name="Chart" Content="Chart" Click="ChartCommand_Executed"/>
+                </ToolBar>
+                <ToolBar x:Name="Selections" BandIndex="1" IsEnabled="{Binding IsEnabled, ElementName=button}">
+                    <Button Name="SelectAll" Content="Select All" Click="SelectAllCommand_Executed"/>
+                    <Button Name="SelectNone" Content="Clear All" Click="SelectNoneCommand_Executed"/>
+                    <Button Name="SelectInvert" Content="Invert All" Click="SelectInvertCommand_Executed"/>
+                    <TextBox Name="GradeFilter" Text="{Binding Path=GradeFilters}" Margin="0,0,0,0.4" Width="72" />
+                    <Button Name="SelectFilter" Content="Filter Grade" Click="SelectFilterCommand_Executed"/>
+                </ToolBar>
             </ToolBarTray>
-            <Canvas Background="White" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+
+                </Grid.ColumnDefinitions>
+                <DataGrid  x:Name="studentDataGrid"  DataContext="{StaticResource ItemCollectionViewSource}"  ItemsSource="{Binding}"  AutoGenerateColumns="False" Grid.Column="0" CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Path=id}" ClipboardContentBinding="{x:Null}" Header="Id" Width="60" MinWidth="60"/>
+                        <DataGridTextColumn Binding="{Binding Path=firstname}" ClipboardContentBinding="{x:Null}" Header="First Name" Width="*" MinWidth="200"/>
+                        <DataGridTextColumn Binding="{Binding Path=lastname}" ClipboardContentBinding="{x:Null}" Header="Last Name" Width="*" MinWidth="200"/>
+                        <DataGridTextColumn Binding="{Binding Path=username}" ClipboardContentBinding="{x:Null}" Header="User Name" Visibility="Hidden"/>
+                        <DataGridCheckBoxColumn Binding="{Binding Path=active}" ClipboardContentBinding="{x:Null}" Header="Selected" Width="60"/>
+                        <DataGridComboBoxColumn ClipboardContentBinding="{x:Null}" SelectedValueBinding="{Binding Path=grade}"  SelectedValuePath="Content" SelectedItemBinding="{x:Null}" TextBinding="{x:Null}" Header="Grade" Width="50" MinWidth="50">
+
+                            <DataGridComboBoxColumn.ItemsSource>
+                                <CompositeCollection>
+                                    <ComboBoxItem Content="X" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                                    <ComboBoxItem Content="R" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                                    <ComboBoxItem Content="P" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                                    <ComboBoxItem Content="M" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                                    <ComboBoxItem Content="D" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                                </CompositeCollection>
+                            </DataGridComboBoxColumn.ItemsSource>
+                        </DataGridComboBoxColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+            </Grid>
+
         </DockPanel>
 
 

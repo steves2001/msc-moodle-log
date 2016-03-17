@@ -194,7 +194,7 @@ namespace OdsReadWrite
         /// <param name="outputFilePath">The name of the file to save to.</param>
         public void WriteOdsFile(DataSet odsFile, string outputFilePath)
         {
-            ZipFile templateFile = this.GetZipFile(Assembly.GetExecutingAssembly().GetManifestResourceStream("OdsReadWrite.template.ods"));
+            ZipFile templateFile = this.GetZipFile(Assembly.GetExecutingAssembly().GetManifestResourceStream("MoodleLogAnalyse.template.ods"));
 
             XmlDocument contentXml = this.GetContentXmlFile(templateFile);
 

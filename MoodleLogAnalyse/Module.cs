@@ -11,11 +11,15 @@ namespace MoodleLogAnalyse
     /// </summary>
     class Module
     {
+
         #region private attributes
-        uint id;
-        uint type;
-        string name;
-        uint totalAccesses;
+        public uint id { get; set; }// Moodle module id
+        public uint type { get; set; } // The moodle module type id
+        public string name { get; set; } // The name of the module
+        public uint totalAccesses { get; set; } // total accesses for this module
+        public uint uniqueAccesses { get { return (uint)uniqueStudents.Count(); } }
+        
+        private List<uint> uniqueStudents = new List<uint>(); // List of unique students id that accessed the module
         #endregion
 
         #region constructors
@@ -38,7 +42,17 @@ namespace MoodleLogAnalyse
 
         #endregion
 
+        #region public methods
+        public void addStudent(uint studentId)
+        {
+            if (!uniqueStudents.Contains(studentId)) uniqueStudents.Add(studentId);
+        }
+
+        #endregion
+
         #region operator overloading
+
+
         public static Module operator ++(Module m)
         {
             m.totalAccesses++; // Increment the access count.
