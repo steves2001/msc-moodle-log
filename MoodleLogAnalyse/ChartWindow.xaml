@@ -12,7 +12,10 @@
             <Canvas x:Name="ChartCanvas" Height="800" Width="895" Background="Beige" VerticalAlignment="Top" HorizontalAlignment="Left"/>
         </ScrollViewer>
         <StackPanel Grid.Column="0">
-            <Button Content="Display Chart" Margin="5,10,5,0" VerticalAlignment="Top" Click="Button_Click"/>
+            <Button Content="Unique Access Count" Margin="5,10,5,0" VerticalAlignment="Top" Click="ByUniqueAccessCount_Click"/>
+            <Button Content="Access Count" Margin="5,10,5,0" VerticalAlignment="Top" Click="ByAccessCount_Click"/>
+            <Button Content="Moodle Sequence" Margin="5,10,5,0" VerticalAlignment="Top" Click="ByMoodleSequence_Click"/>
+            <CheckBox x:Name="Sort_Ascending" Content="Sort Ascending" Margin="5,10,5,0" VerticalAlignment="Top"/>
             <ListBox x:Name="ModuleSelector" HorizontalContentAlignment="Stretch" MaxHeight="295" Margin="5,10,5,0" VerticalAlignment="Top" SelectionMode="Multiple">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -51,6 +54,7 @@
                 </ListBox.ItemTemplate>
 
             </ListBox>
+
         </StackPanel>
     </Grid>
 </Window>
