@@ -206,7 +206,33 @@ namespace MoodleLogAnalyse
             }
         }
 
-        
+        private void ByMoodleSequence_Click(object sender, RoutedEventArgs e)
+        {
+            if (Sort_Ascending.IsChecked == true)
+                Analyse.sortModulesByMoodleSequence();
+            else
+                Analyse.sortModulesByMoodleSequence("descending");
+            drawBarChart();
+        }
+
+        private void ByAccessCount_Click(object sender, RoutedEventArgs e)
+        {
+            if (Sort_Ascending.IsChecked == true)
+                Analyse.sortModulesByAccessCount();
+            else
+                Analyse.sortModulesByAccessCount("descending");
+
+            drawBarChart();
+        }
+
+        private void ByUniqueAccessCount_Click(object sender, RoutedEventArgs e)
+        {
+            if (Sort_Ascending.IsChecked == true)
+                Analyse.sortModulesByUniqueAccessCount();
+            else
+                Analyse.sortModulesByUniqueAccessCount("descending");
+            drawBarChart();
+        }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
